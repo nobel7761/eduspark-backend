@@ -1,6 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { hashPassword } from 'src/utils/password.util';
 import { User } from './user.model';
 
@@ -22,10 +26,20 @@ export class UsersService {
     });
   }
 
-  async findByEmail(email: string, excludePassword = true) {
+  async findById(id: string, excludePassword = true) {
+    if (id && !Types.ObjectId.isValid(id)) {
+      throw new BadRequestException('Invalid user ID');
+    }
     return await this.userModel
+      .findById(id)
+      .select(excludePassword ? { password: 0 } : {});
+  }
+
+  async findByEmail(email: string, excludePassword = true) {
+    const user = await this.userModel
       .findOne({ email })
-      .select(excludePassword ? '-password' : '+password');
+      .select(excludePassword ? { password: 0 } : {});
+    return user;
   }
 
   async updateUserWithAccessToken(id: string, accessToken: string | null) {
@@ -43,31 +57,5 @@ export class UsersService {
         { new: true },
       )
       .select({ password: 0 });
-  }
-
-  async addRefreshToken(userId: string, refreshToken: string) {
-    const user = await this.userModel.findById(userId);
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-
-    if (!user.refreshTokens) {
-      user.refreshTokens = [];
-    }
-
-    user.refreshTokens.push(refreshToken);
-    return await user.save();
-  }
-
-  async removeRefreshToken(userId: string, refreshToken: string) {
-    const user = await this.userModel.findById(userId);
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-
-    user.refreshTokens = user.refreshTokens.filter(
-      (token) => token !== refreshToken,
-    );
-    return await user.save();
   }
 }

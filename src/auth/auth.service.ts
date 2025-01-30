@@ -6,26 +6,32 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
-import { RegistrationFormData } from './auth.dto';
+import { LoginForm, RegistrationFormData } from './auth.dto';
 import { UserType } from 'src/enums/users.enum';
 import { Status } from 'src/enums/status.enum';
 import { JwtPayload } from './jwt-payload';
 import { UserDocument } from 'src/users/user.model';
 import { comparePassword } from 'src/utils/password.util';
+import { ModuleRef } from '@nestjs/core';
 
 @Injectable()
 export class AuthService {
-  constructor(
-    private usersService: UsersService,
-    private jwtService: JwtService,
-  ) {}
+  private usersService: UsersService;
+  private jwtService: JwtService;
+
+  constructor(private moduleRef: ModuleRef) {}
+
+  onModuleInit() {
+    this.usersService = this.moduleRef.get(UsersService, { strict: false });
+    this.jwtService = this.moduleRef.get(JwtService, { strict: false });
+  }
 
   async validateUser(
     email: string,
     password: string,
   ): Promise<UserDocument | null> {
     const user = await this.usersService.findByEmail(email);
-    if (user && comparePassword(user.password, password)) {
+    if (user && comparePassword(password, user.password)) {
       return user;
     }
     return null;
@@ -34,6 +40,7 @@ export class AuthService {
   async createUser(form: RegistrationFormData, autoLogin: boolean = false) {
     const passwordRegex =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,16}$/;
+
     if (form.password && !passwordRegex.test(form.password)) {
       throw new BadRequestException('Invalid password format');
     }
@@ -83,53 +90,32 @@ export class AuthService {
     return this.usersService.create(form);
   }
 
-  // async login(user: UserDocument) {
-  //   const payload = { email: user.email, sub: user._id.toString() };
-  //   const accessToken = this.jwtService.sign(payload, {
-  //     secret: process.env.JWT_ACCESS_SECRET,
-  //     expiresIn: '15m',
-  //   });
-  //   const refreshToken = this.jwtService.sign(payload, {
-  //     secret: process.env.JWT_REFRESH_SECRET,
-  //     expiresIn: '7d',
-  //   });
-
-  //   await this.usersService.addRefreshToken(user._id.toString(), refreshToken);
-
-  //   return {
-  //     access_token: accessToken,
-  //     refresh_token: refreshToken,
-  //   };
-  // }
-
-  async refreshTokens(userId: string, refreshToken: string) {
-    const user = await this.usersService.findByEmail(userId);
-    if (!user || !user.refreshTokens.includes(refreshToken)) {
+  async login(form: LoginForm) {
+    console.log('1', form);
+    const email = form.email.toLowerCase();
+    const user = await this.usersService.findByEmail(email, false);
+    console.log('2', user);
+    if (!user) {
       throw new UnauthorizedException();
     }
 
-    const payload = { email: user.email, sub: user._id.toString() };
+    const isPasswordValid =
+      user && comparePassword(form.password, user.password);
+    console.log('3', isPasswordValid);
+    if (!isPasswordValid) {
+      throw new UnauthorizedException();
+    }
+
+    const payload = { email: user.email, uid: user._id.toString() };
+    console.log('4', payload);
     const accessToken = this.jwtService.sign(payload, {
       secret: process.env.JWT_ACCESS_SECRET,
-      expiresIn: '15m',
+      expiresIn: process.env.JWT_EXPIRES_IN,
     });
-    const newRefreshToken = this.jwtService.sign(payload, {
-      secret: process.env.JWT_REFRESH_SECRET,
-      expiresIn: '7d',
-    });
-
-    await this.usersService.removeRefreshToken(
-      user._id.toString(),
-      refreshToken,
-    );
-    await this.usersService.addRefreshToken(
-      user._id.toString(),
-      newRefreshToken,
-    );
-
+    console.log('5', accessToken);
     return {
       access_token: accessToken,
-      refresh_token: newRefreshToken,
+      user_type: user.userType,
     };
   }
 }

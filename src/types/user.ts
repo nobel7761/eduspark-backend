@@ -13,5 +13,4 @@ export interface IUser {
   userType: UserType;
   forgotPasswordToken?: string | null;
   accessToken?: string | null;
-  refreshTokens?: string[];
 }

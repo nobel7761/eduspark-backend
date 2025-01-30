@@ -5,10 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import { UsersModule } from '../users/users.module';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
-import { LocalStrategy } from './strategies/local.strategy';
-import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
-import { LocalAuthGuard } from './guards/local-auth.guard';
-import { JwtRefreshAuthGuard } from './guards/jwt-refresh-auth.guard';
+import { JwtStrategy } from './strategies/jwt.strategy';
 
 @Module({
   imports: [
@@ -22,13 +19,7 @@ import { JwtRefreshAuthGuard } from './guards/jwt-refresh-auth.guard';
       }),
     }),
   ],
-  providers: [
-    AuthService,
-    LocalStrategy,
-    JwtRefreshStrategy,
-    LocalAuthGuard,
-    JwtRefreshAuthGuard,
-  ],
+  providers: [AuthService, JwtStrategy],
   controllers: [AuthController],
 })
 export class AuthModule {}

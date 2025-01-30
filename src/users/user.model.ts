@@ -12,7 +12,7 @@ import { HydratedDocument } from 'mongoose';
 import { Status } from 'src/enums/status.enum';
 import { UserType } from 'src/enums/users.enum';
 import { IUser } from 'src/types/user';
-import { Trim } from 'src/utils/decorators/trim.decorator';
+import { Trim } from 'src/decorators/trim.decorator';
 
 export type UserDocument = HydratedDocument<User>;
 
@@ -70,7 +70,6 @@ export class User implements IUser {
   password: string;
 
   @Trim()
-  @IsOptional()
   @IsString({ message: 'Phone number must be a number' })
   @MinLength(10, { message: 'Phone number must be at least 10 characters' })
   @Matches(/^\+?[0-9 ()-]+$/, {
@@ -78,7 +77,8 @@ export class User implements IUser {
   })
   @Prop({
     type: String,
-    default: '',
+    required: true,
+    unique: true,
   })
   primaryPhoneNumber: string;
 
@@ -107,9 +107,6 @@ export class User implements IUser {
     type: String,
   })
   accessToken: string | null;
-
-  @Prop({ type: [String], default: [] })
-  refreshTokens: string[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

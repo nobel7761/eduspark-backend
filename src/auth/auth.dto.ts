@@ -8,3 +8,5 @@ export class RegistrationFormData extends PickType(User, [
   'password',
   'primaryPhoneNumber',
 ] as const) {}
+
+export type LoginForm = Pick<User, 'email' | 'password'>;
