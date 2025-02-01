@@ -9,6 +9,7 @@ import { AttendanceModule } from './attendance/attendance.module';
 import configuration from './config/configuration';
 import { StudentModule } from './student/student.module';
 import { DirectorsModule } from './directors/directors.module';
+import { ManagementRegularTimingModule } from './management-regular-timing/management-regular-timing.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { DirectorsModule } from './directors/directors.module';
     AttendanceModule,
     StudentModule,
     DirectorsModule,
+    ManagementRegularTimingModule,
   ],
   controllers: [AppController],
   providers: [AppService],

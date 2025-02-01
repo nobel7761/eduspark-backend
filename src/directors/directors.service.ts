@@ -79,7 +79,7 @@ export class DirectorsService {
   }
 
   async findAll() {
-    return await this.directorModel.find().sort({ createdAt: -1 });
+    return await this.directorModel.find();
   }
 
   async findOneByEmail(email: string) {
