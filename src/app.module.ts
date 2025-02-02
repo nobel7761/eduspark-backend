@@ -10,6 +10,7 @@ import configuration from './config/configuration';
 import { StudentModule } from './student/student.module';
 import { DirectorsModule } from './directors/directors.module';
 import { ManagementRegularTimingModule } from './management-regular-timing/management-regular-timing.module';
+import { SubjectModule } from './subject/subject.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { ManagementRegularTimingModule } from './management-regular-timing/manag
     StudentModule,
     DirectorsModule,
     ManagementRegularTimingModule,
+    SubjectModule,
   ],
   controllers: [AppController],
   providers: [AppService],
