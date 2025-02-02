@@ -1,5 +1,5 @@
 import { PickType } from '@nestjs/mapped-types';
-import { User } from 'src/users/user.model';
+import { User } from '../users/user.model';
 
 export class RegistrationFormData extends PickType(User, [
   'firstName',

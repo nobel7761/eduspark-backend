@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { hashPassword } from 'src/utils/password.util';
+import { hashPassword } from '../utils/password.util';
 import { User } from './user.model';
 
 @Injectable()

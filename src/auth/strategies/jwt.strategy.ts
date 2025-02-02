@@ -6,7 +6,7 @@ import {
   Strategy,
   StrategyOptionsWithoutRequest,
 } from 'passport-jwt';
-import { UsersService } from 'src/users/users.service';
+import { UsersService } from '../../users/users.service';
 import { JwtPayload } from '../jwt-payload';
 
 @Injectable()

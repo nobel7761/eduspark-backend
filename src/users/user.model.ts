@@ -9,10 +9,10 @@ import {
   MinLength,
 } from 'class-validator';
 import { HydratedDocument } from 'mongoose';
-import { Status } from 'src/enums/status.enum';
-import { UserType } from 'src/enums/users.enum';
-import { IUser } from 'src/types/user';
-import { Trim } from 'src/decorators/trim.decorator';
+import { Status } from '../enums/status.enum';
+import { UserType } from '../enums/users.enum';
+import { IUser } from '../types/user';
+import { Trim } from '../decorators/trim.decorator';
 
 export type UserDocument = HydratedDocument<User>;
 

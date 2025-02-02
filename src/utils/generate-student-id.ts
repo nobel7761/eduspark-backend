@@ -1,4 +1,4 @@
-import { ClassCode } from 'src/enums/class-code.enum';
+import { ClassCode } from '../enums/class-code.enum';
 
 export function generateStudentId(
   totalStudents: number,

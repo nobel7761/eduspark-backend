@@ -5,14 +5,14 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { ModuleRef } from '@nestjs/core';
 import { UsersService } from '../users/users.service';
 import { LoginForm, RegistrationFormData } from './auth.dto';
-import { UserType } from 'src/enums/users.enum';
-import { Status } from 'src/enums/status.enum';
+import { UserType } from '../enums/users.enum';
+import { Status } from '../enums/status.enum';
 import { JwtPayload } from './jwt-payload';
-import { UserDocument } from 'src/users/user.model';
-import { comparePassword } from 'src/utils/password.util';
-import { ModuleRef } from '@nestjs/core';
+import { UserDocument } from '../users/user.model';
+import { comparePassword } from '../utils/password.util';
 
 @Injectable()
 export class AuthService {

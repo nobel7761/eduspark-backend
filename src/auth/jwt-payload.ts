@@ -1,5 +1,5 @@
-import { Status } from 'src/enums/status.enum';
-import { UserType } from 'src/enums/users.enum';
+import { Status } from '../enums/status.enum';
+import { UserType } from '../enums/users.enum';
 
 export interface JwtPayload {
   uid: string; // User ID

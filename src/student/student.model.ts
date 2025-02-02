@@ -9,7 +9,7 @@ import {
   IsDateString,
 } from 'class-validator';
 import { HydratedDocument } from 'mongoose';
-import { Gender, Religion } from 'src/enums/common.enum';
+import { Gender, Religion } from '../enums/common.enum';
 
 export type StudentDocument = HydratedDocument<Student>;
 

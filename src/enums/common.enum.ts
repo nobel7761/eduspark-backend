@@ -9,3 +9,10 @@ export enum Religion {
   Christianity = 'Christianity',
   Buddhism = 'Buddhism',
 }
+
+export enum UserRole {
+  ADMIN = 'admin',
+  USER = 'user',
+}
+
+// Add any other common enums you need here
