@@ -11,6 +11,7 @@ import { StudentModule } from './student/student.module';
 import { DirectorsModule } from './directors/directors.module';
 import { ManagementRegularTimingModule } from './management-regular-timing/management-regular-timing.module';
 import { SubjectModule } from './subject/subject.module';
+import { ClassModule } from './class/class.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { SubjectModule } from './subject/subject.module';
     DirectorsModule,
     ManagementRegularTimingModule,
     SubjectModule,
+    ClassModule,
   ],
   controllers: [AppController],
   providers: [AppService],
