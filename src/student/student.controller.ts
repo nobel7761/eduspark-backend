@@ -19,7 +19,6 @@ export class StudentController {
   @Post()
   async create(@Body() createStudentDto: CreateStudentDto) {
     try {
-      console.log('createStudentDto', createStudentDto);
       const result = await this.studentService.create(createStudentDto);
       return result;
     } catch (error) {

@@ -6,10 +6,10 @@ import {
   Patch,
   Param,
   Delete,
-  UseGuards,
+  // UseGuards,
 } from '@nestjs/common';
 import { AttendanceService } from './attendance.service';
-import { JwtAuthGuard } from '../guards';
+// import { JwtAuthGuard } from '../guards';
 import { CreateAttendanceDto, UpdateAttendanceDto } from './attendance.dto';
 
 @Controller('attendance')
@@ -19,7 +19,6 @@ export class AttendanceController {
 
   @Post()
   create(@Body() createAttendanceDto: CreateAttendanceDto) {
-    console.log(createAttendanceDto);
     return this.attendanceService.create(createAttendanceDto);
   }
 

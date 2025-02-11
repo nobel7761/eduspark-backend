@@ -4,7 +4,6 @@ export function generateStudentId(
   totalStudents: number,
   classValue: string,
 ): string {
-  console.log('generateStudentId', classValue);
   const currentYear = new Date().getFullYear().toString().slice(-2);
   let classCode: string;
   let numericClass: string | undefined;

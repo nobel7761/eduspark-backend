@@ -91,28 +91,23 @@ export class AuthService {
   }
 
   async login(form: LoginForm) {
-    console.log('1', form);
     const email = form.email.toLowerCase();
     const user = await this.usersService.findByEmail(email, false);
-    console.log('2', user);
     if (!user) {
       throw new UnauthorizedException();
     }
 
     const isPasswordValid =
       user && comparePassword(form.password, user.password);
-    console.log('3', isPasswordValid);
     if (!isPasswordValid) {
       throw new UnauthorizedException();
     }
 
     const payload = { email: user.email, uid: user._id.toString() };
-    console.log('4', payload);
     const accessToken = this.jwtService.sign(payload, {
       secret: process.env.JWT_ACCESS_SECRET,
       expiresIn: process.env.JWT_EXPIRES_IN,
     });
-    console.log('5', accessToken);
     return {
       access_token: accessToken,
       user_type: user.userType,

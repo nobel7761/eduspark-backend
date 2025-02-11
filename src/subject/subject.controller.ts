@@ -19,7 +19,6 @@ export class SubjectController {
 
   @Post('')
   create(@Body() subjects: CreateSubjectDto[]) {
-    console.log(subjects);
     return this.subjectService.create(subjects);
   }
 

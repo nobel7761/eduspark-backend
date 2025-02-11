@@ -15,4 +15,10 @@ export enum UserRole {
   USER = 'user',
 }
 
+export enum Group {
+  SCIENCE = 'SCIENCE',
+  BUSINESS = 'BUSINESS',
+  HUMANITIES = 'HUMANITIES',
+}
+
 // Add any other common enums you need here

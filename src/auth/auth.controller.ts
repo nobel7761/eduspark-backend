@@ -13,7 +13,6 @@ export class AuthController {
 
   @Post('login')
   async login(@Body() form: LoginForm) {
-    console.log('Calling login');
     return await this.authService.login(form);
   }
 }

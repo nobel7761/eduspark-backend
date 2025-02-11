@@ -10,7 +10,6 @@ export class UserController {
   @Get('')
   @UseGuards(JwtAuthGuard)
   async loggedInUser(@AuthUser() user: JwtPayload) {
-    console.log(user);
     return await this.usersService.findById(user.uid);
   }
 }
