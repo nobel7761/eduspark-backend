@@ -21,4 +21,9 @@ export enum Group {
   HUMANITIES = 'HUMANITIES',
 }
 
+export enum EmployeeType {
+  TEACHER = 'Teacher',
+  CLEANER = 'Cleaner',
+}
+
 // Add any other common enums you need here

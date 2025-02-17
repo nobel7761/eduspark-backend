@@ -9,7 +9,7 @@ import {
   Min,
   Max,
 } from 'class-validator';
-import { Gender, Group } from '../enums/common.enum';
+import { Gender, Group, EmployeeType } from '../enums/common.enum';
 import { PaymentMethod } from '../enums/payment.enum';
 
 class ParentDto {
@@ -76,7 +76,7 @@ class EducationalBackgroundDto {
   ssc: SchoolEducationDto;
 }
 
-export class CreateTeacherDto {
+export class CreateEmployeeDto {
   @IsString()
   firstName: string;
 
@@ -85,6 +85,9 @@ export class CreateTeacherDto {
 
   @IsEnum(Gender)
   gender: Gender;
+
+  @IsEnum(EmployeeType)
+  employeeType: EmployeeType;
 
   @IsString()
   primaryPhone: string;
@@ -143,7 +146,7 @@ export class CreateTeacherDto {
   comments?: string;
 }
 
-export class UpdateTeacherDto extends CreateTeacherDto {
+export class UpdateEmployeeDto extends CreateEmployeeDto {
   @IsOptional()
   joiningDate?: Date;
 }

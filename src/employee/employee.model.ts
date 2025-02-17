@@ -12,10 +12,10 @@ import {
   Max,
 } from 'class-validator';
 import { HydratedDocument } from 'mongoose';
-import { Gender, Group } from '../enums/common.enum';
+import { Gender, Group, EmployeeType } from '../enums/common.enum';
 import { PaymentMethod } from '../enums/payment.enum';
 
-export type TeacherDocument = HydratedDocument<Teacher>;
+export type EmployeeDocument = HydratedDocument<Employee>;
 
 @Schema()
 class Parent {
@@ -97,7 +97,7 @@ class EducationalBackground {
 }
 
 @Schema({ timestamps: true })
-export class Teacher {
+export class Employee {
   @Prop({ required: true, message: 'First name is required' })
   @IsString()
   firstName: string;
@@ -208,12 +208,20 @@ export class Teacher {
 
   @Prop({ required: true, unique: true })
   @IsString()
-  teacherId: string;
+  employeeId: string;
 
   @Prop({ type: String })
   @IsOptional()
   @IsString()
   comments?: string;
+
+  @Prop({
+    required: true,
+    enum: EmployeeType,
+    message: 'Employee type is required',
+  })
+  @IsEnum(EmployeeType)
+  employeeType: EmployeeType;
 }
 
-export const TeacherSchema = SchemaFactory.createForClass(Teacher);
+export const EmployeeSchema = SchemaFactory.createForClass(Employee);

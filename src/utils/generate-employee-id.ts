@@ -1,8 +1,8 @@
-export function generateTeacherId(
+export function generateEmployeeId(
   firstName: string,
   lastName: string,
   joiningDate: Date,
-  totalTeachers: number,
+  totalEmployees: number,
 ): string {
   // Get first characters of first and last name
   const firstInitial = firstName.charAt(0).toUpperCase();
@@ -16,9 +16,9 @@ export function generateTeacherId(
   // Create the base prefix
   const prefix = `${firstInitial}${lastInitial}${year}${month}${day}`;
 
-  // Generate sequence number based on total teachers
-  const sequenceNumber = (totalTeachers + 1).toString().padStart(3, '0');
+  // Generate sequence number based on total employees
+  const sequenceNumber = (totalEmployees + 1).toString().padStart(3, '0');
 
-  // Combine all parts to create teacher ID
+  // Combine all parts to create employee ID
   return `${prefix}${sequenceNumber}`;
 }

@@ -12,7 +12,7 @@ import { DirectorsModule } from './directors/directors.module';
 import { ManagementRegularTimingModule } from './management-regular-timing/management-regular-timing.module';
 import { SubjectModule } from './subject/subject.module';
 import { ClassModule } from './class/class.module';
-import { TeacherModule } from './teacher/teacher.module';
+import { EmployeeModule } from './employee/employee.module';
 
 @Module({
   imports: [
@@ -29,7 +29,7 @@ import { TeacherModule } from './teacher/teacher.module';
     ManagementRegularTimingModule,
     SubjectModule,
     ClassModule,
-    TeacherModule,
+    EmployeeModule,
   ],
   controllers: [AppController],
   providers: [AppService],
