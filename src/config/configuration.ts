@@ -1,6 +1,6 @@
 export default () => ({
   mongodb: {
-    uri: process.env.MONGODB_URI,
+    uri: process.env.MONGO_URI,
   },
   jwt: {
     accessSecret: process.env.JWT_ACCESS_SECRET,

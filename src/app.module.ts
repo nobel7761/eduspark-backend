@@ -20,7 +20,7 @@ import { EmployeeModule } from './employee/employee.module';
       load: [configuration],
       isGlobal: true,
     }),
-    MongooseModule.forRoot(process.env.MONGODB_URI as string),
+    MongooseModule.forRoot(process.env.MONGO_URI as string),
     AuthModule,
     UsersModule,
     AttendanceModule,
