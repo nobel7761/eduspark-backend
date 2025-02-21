@@ -7,9 +7,9 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",
-    "vercel-build": "nest build",
+    "vercel-build": "npm run build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "nest start",
+    "start": "node dist/main.js",
     "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/main.ts",
     "start:debug": "nodemon --watch 'src/**/*.ts' --exec 'node --inspect-brk -r ts-node/register' src/main.ts",
     "start:prod": "NODE_ENV=production node dist/main",
