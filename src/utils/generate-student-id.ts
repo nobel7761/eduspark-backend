@@ -12,7 +12,7 @@ export function generateStudentId(
     case 'arabic':
       classCode = ClassCode.ARABIC;
       break;
-    case 'spoken english':
+    case 'spoken_english':
       classCode = ClassCode.SPOKEN_ENGLISH;
       break;
     case 'drawing':
