@@ -88,10 +88,12 @@ export class EmployeeService {
     return employee;
   }
 
-  async update(id: string, updateEmployeeDto: UpdateEmployeeDto) {
+  async update(employeeId: string, updateEmployeeDto: UpdateEmployeeDto) {
     try {
       // Check if employee exists
-      const existingEmployee = await this.employeeModel.findById(id);
+      const existingEmployee = await this.employeeModel.findOne({
+        employeeId,
+      });
       if (!existingEmployee) {
         throw new NotFoundException('Employee not found');
       }
@@ -103,7 +105,7 @@ export class EmployeeService {
       ) {
         const employeeWithEmail = await this.employeeModel.findOne({
           email: updateEmployeeDto.email.toLowerCase(),
-          _id: { $ne: id },
+          _id: { $ne: existingEmployee._id },
         });
         if (employeeWithEmail) {
           throw new BadRequestException('Email already exists');
@@ -120,7 +122,7 @@ export class EmployeeService {
             { primaryPhone: updateEmployeeDto.primaryPhone },
             { secondaryPhone: updateEmployeeDto.primaryPhone },
           ],
-          _id: { $ne: id },
+          _id: { $ne: existingEmployee._id },
         });
         if (employeeWithPhone) {
           throw new BadRequestException('Phone number already exists');
@@ -128,7 +130,7 @@ export class EmployeeService {
       }
 
       const updatedEmployee = await this.employeeModel.findByIdAndUpdate(
-        id,
+        existingEmployee._id,
         updateEmployeeDto,
         { new: true },
       );
