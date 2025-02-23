@@ -8,6 +8,8 @@ import { Model } from 'mongoose';
 import { CreateEmployeeDto, UpdateEmployeeDto } from './employee.dto';
 import { Employee } from './employee.model';
 import { generateEmployeeId } from '../utils/generate-employee-id';
+import { EmployeeType } from '../enums/common.enum';
+import { PaymentMethod } from '../enums/payment.enum';
 
 @Injectable()
 export class EmployeeService {
@@ -225,6 +227,33 @@ export class EmployeeService {
       }
       throw new BadRequestException(
         `Failed to process bulk delete: ${error || 'Unknown error occurred'}`,
+      );
+    }
+  }
+
+  async findAllTeachers() {
+    try {
+      return await this.employeeModel
+        .find({ employeeType: EmployeeType.TEACHER })
+        .sort({ createdAt: -1 });
+    } catch (error) {
+      throw new BadRequestException(
+        `Failed to fetch teachers: ${error || 'Unknown error occurred'}`,
+      );
+    }
+  }
+
+  async findAllClassBasedTeachers() {
+    try {
+      return await this.employeeModel
+        .find({
+          employeeType: EmployeeType.TEACHER,
+          paymentMethod: PaymentMethod.PerClass,
+        })
+        .sort({ createdAt: -1 });
+    } catch (error) {
+      throw new BadRequestException(
+        `Failed to fetch class-based teachers: ${error || 'Unknown error occurred'}`,
       );
     }
   }

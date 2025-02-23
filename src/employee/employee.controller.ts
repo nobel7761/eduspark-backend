@@ -27,6 +27,16 @@ export class EmployeeController {
     return this.employeeService.findAll();
   }
 
+  @Get('/teachers')
+  findAllTeachers() {
+    return this.employeeService.findAllTeachers();
+  }
+
+  @Get('/class-based-teachers')
+  findAllClassBasedTeachers() {
+    return this.employeeService.findAllClassBasedTeachers();
+  }
+
   @Get(':employeeId')
   findOne(@Param('employeeId') employeeId: string) {
     // Remove any whitespace and validate the employeeId format
