@@ -8,6 +8,7 @@ import {
   ValidateNested,
   Min,
   Max,
+  IsArray,
 } from 'class-validator';
 import { Gender, Group, EmployeeType } from '../enums/common.enum';
 import { PaymentMethod } from '../enums/payment.enum';
@@ -76,6 +77,16 @@ class EducationalBackgroundDto {
   ssc: SchoolEducationDto;
 }
 
+class ClassPaymentDto {
+  @IsArray()
+  @IsString({ each: true })
+  classes: string[];
+
+  @IsNumber()
+  @Min(0)
+  amount: number;
+}
+
 export class CreateEmployeeDto {
   @IsString()
   firstName: string;
@@ -129,9 +140,10 @@ export class CreateEmployeeDto {
   paymentMethod: PaymentMethod;
 
   @IsOptional()
-  @IsNumber()
-  @Min(0)
-  paymentPerClass?: number;
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ClassPaymentDto)
+  paymentPerClass?: ClassPaymentDto[];
 
   @IsOptional()
   @IsNumber()

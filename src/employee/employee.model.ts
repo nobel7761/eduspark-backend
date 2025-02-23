@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Transform } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
   IsEmail,
   IsEnum,
@@ -10,6 +10,7 @@ import {
   ValidateNested,
   Min,
   Max,
+  IsArray,
 } from 'class-validator';
 import { HydratedDocument } from 'mongoose';
 import { Gender, Group, EmployeeType } from '../enums/common.enum';
@@ -94,6 +95,12 @@ class EducationalBackground {
   @ValidateNested()
   @Prop({ type: SchoolEducation, required: true, message: 'SSC is required' })
   ssc: SchoolEducation;
+}
+
+@Schema()
+class ClassPayment {
+  classes: string[];
+  amount: number;
 }
 
 @Schema({ timestamps: true })
@@ -191,11 +198,12 @@ export class Employee {
   @IsEnum(PaymentMethod)
   paymentMethod: PaymentMethod;
 
-  @Prop()
+  @Prop({ type: [{ classes: [String], amount: Number }] })
   @IsOptional()
-  @IsNumber()
-  @Min(0)
-  paymentPerClass?: number;
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ClassPayment)
+  paymentPerClass?: ClassPayment[];
 
   @Prop()
   @IsOptional()
