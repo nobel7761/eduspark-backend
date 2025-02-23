@@ -9,6 +9,7 @@ import {
   Min,
   Max,
   IsArray,
+  ValidateIf,
 } from 'class-validator';
 import { Gender, Group, EmployeeType } from '../enums/common.enum';
 import { PaymentMethod } from '../enums/payment.enum';
@@ -143,11 +144,17 @@ export class CreateEmployeeDto {
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => ClassPaymentDto)
+  @ValidateIf(
+    (o: CreateEmployeeDto) => o.paymentMethod === PaymentMethod.PerClass,
+  )
   paymentPerClass?: ClassPaymentDto[];
 
   @IsOptional()
   @IsNumber()
   @Min(0)
+  @ValidateIf(
+    (o: CreateEmployeeDto) => o.paymentMethod === PaymentMethod.Monthly,
+  )
   paymentPerMonth?: number;
 
   @IsOptional()
