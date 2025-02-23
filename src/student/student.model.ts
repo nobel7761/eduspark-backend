@@ -23,6 +23,10 @@ export class Student {
   @IsDateString()
   dateOfBirth: Date;
 
+  @Prop({ required: true, message: 'Date of admission is required' })
+  @IsDateString()
+  admissionDate: Date;
+
   @Prop({ required: true, enum: Gender, message: 'Gender is required' })
   @IsEnum(Gender)
   gender: Gender;
@@ -33,12 +37,7 @@ export class Student {
 
   @IsOptional()
   @IsString()
-  primaryPhone?: string;
-
-  @IsOptional()
-  @IsString()
-  @Prop()
-  secondaryPhone?: string;
+  phoneNumber?: string;
 
   @Prop({ required: true, message: 'Institute name is required' })
   @IsString()
@@ -72,23 +71,21 @@ export class Student {
     type: {
       name: {
         type: String,
-        required: true,
-        message: 'Father name is required',
+        required: false,
       },
       phone: {
         type: String,
-        required: true,
-        message: 'Father phone is required',
+        required: false,
       },
       occupation: { type: String },
     },
-    required: true,
-    message: 'Father Information is required',
+    required: false,
   })
   @IsObject()
-  father: {
-    name: string;
-    phone: string;
+  @IsOptional()
+  father?: {
+    name?: string;
+    phone?: string;
     occupation?: string;
   };
 
@@ -96,23 +93,21 @@ export class Student {
     type: {
       name: {
         type: String,
-        required: true,
-        message: 'Mother name is required',
+        required: false,
       },
       phone: {
         type: String,
-        required: true,
-        message: 'Mother phone is required',
+        required: false,
       },
       occupation: { type: String },
     },
-    required: true,
-    message: 'Mother Information is required',
+    required: false,
   })
   @IsObject()
-  mother: {
-    name: string;
-    phone: string;
+  @IsOptional()
+  mother?: {
+    name?: string;
+    phone?: string;
     occupation?: string;
   };
 
