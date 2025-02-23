@@ -39,10 +39,7 @@ export class EmployeeService {
         }
       }
 
-      // Get total number of employees
-      const totalEmployees = await this.employeeModel.countDocuments();
-
-      // Clean up the DTO by removing empty string values while preserving boolean values
+      // Clean up the DTO by removing empty fields
       const cleanedDto = Object.fromEntries(
         Object.entries(createEmployeeDto).filter(([, value]) => {
           if (typeof value === 'boolean') return true;
@@ -50,6 +47,16 @@ export class EmployeeService {
           return value !== undefined && value !== null;
         }),
       ) as CreateEmployeeDto;
+
+      // Only include parent and educational info for teachers
+      if (cleanedDto.employeeType !== EmployeeType.TEACHER) {
+        delete cleanedDto.father;
+        delete cleanedDto.mother;
+        delete cleanedDto.educationalBackground;
+      }
+
+      // Get total number of employees
+      const totalEmployees = await this.employeeModel.countDocuments();
 
       // Generate employee ID
       const employeeId = generateEmployeeId(
