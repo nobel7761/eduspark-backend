@@ -95,6 +95,9 @@ export class CreateEmployeeDto {
   @IsString()
   lastName: string;
 
+  @IsString()
+  dateOfBirth: Date;
+
   @IsEnum(Gender)
   gender: Gender;
 
@@ -119,23 +122,29 @@ export class CreateEmployeeDto {
   @IsOptional()
   permanentAddress?: string;
 
+  @IsOptional()
   @IsObject()
   @ValidateNested()
   @Type(() => ParentDto)
-  father: ParentDto;
+  @ValidateIf((o: CreateEmployeeDto) => o.employeeType === EmployeeType.TEACHER)
+  father?: ParentDto;
 
+  @IsOptional()
   @IsObject()
   @ValidateNested()
   @Type(() => ParentDto)
-  mother: ParentDto;
+  @ValidateIf((o: CreateEmployeeDto) => o.employeeType === EmployeeType.TEACHER)
+  mother?: ParentDto;
 
   @IsOptional()
   isCurrentlyStudying?: boolean;
 
+  @IsOptional()
   @IsObject()
   @ValidateNested()
   @Type(() => EducationalBackgroundDto)
-  educationalBackground: EducationalBackgroundDto;
+  @ValidateIf((o: CreateEmployeeDto) => o.employeeType === EmployeeType.TEACHER)
+  educationalBackground?: EducationalBackgroundDto;
 
   @IsEnum(PaymentMethod)
   paymentMethod: PaymentMethod;

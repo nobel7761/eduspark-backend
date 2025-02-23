@@ -113,6 +113,10 @@ export class Employee {
   @IsString()
   lastName: string;
 
+  @Prop({ required: true, message: 'Date of birth is required' })
+  @IsString()
+  dateOfBirth: Date;
+
   @Prop({ required: true, enum: Gender, message: 'Gender is required' })
   @IsEnum(Gender)
   gender: Gender;
@@ -159,8 +163,9 @@ export class Employee {
 
   @Prop({
     type: Parent,
-    required: true,
-    message: 'Father information is required',
+    required: function (this: Employee) {
+      return this.employeeType === EmployeeType.TEACHER;
+    },
   })
   @IsObject()
   @ValidateNested()
@@ -168,8 +173,9 @@ export class Employee {
 
   @Prop({
     type: Parent,
-    required: true,
-    message: 'Mother information is required',
+    required: function (this: Employee) {
+      return this.employeeType === EmployeeType.TEACHER;
+    },
   })
   @IsObject()
   @ValidateNested()
@@ -183,8 +189,9 @@ export class Employee {
 
   @Prop({
     type: EducationalBackground,
-    required: true,
-    message: 'Educational background is required',
+    required: function (this: Employee) {
+      return this.employeeType === EmployeeType.TEACHER;
+    },
   })
   @IsObject()
   @ValidateNested()
