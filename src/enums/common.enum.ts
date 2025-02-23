@@ -17,7 +17,7 @@ export enum UserRole {
 
 export enum Group {
   SCIENCE = 'SCIENCE',
-  BUSINESS = 'BUSINESS',
+  BUSINESS = 'BUSINESS STUDIES',
   HUMANITIES = 'HUMANITIES',
 }
 
