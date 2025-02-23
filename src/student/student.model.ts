@@ -31,9 +31,9 @@ export class Student {
   @IsEnum(Religion)
   religion: Religion;
 
-  @Prop({ required: true, message: 'Primary phone is required' })
+  @IsOptional()
   @IsString()
-  primaryPhone: string;
+  primaryPhone?: string;
 
   @IsOptional()
   @IsString()
