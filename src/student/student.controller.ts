@@ -50,7 +50,6 @@ export class StudentController {
 
   @Delete('/bulk-delete')
   bulkDelete(@Body() studentIds: string[]) {
-    console.log(studentIds);
     return this.studentService.bulkDelete(studentIds);
   }
 
