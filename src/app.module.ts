@@ -13,6 +13,7 @@ import { ManagementRegularTimingModule } from './management-regular-timing/manag
 import { SubjectModule } from './subject/subject.module';
 import { ClassModule } from './class/class.module';
 import { EmployeeModule } from './employee/employee.module';
+import { MonthlyClassCountModule } from './monthly-class-count/monthly-class-count.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { EmployeeModule } from './employee/employee.module';
     SubjectModule,
     ClassModule,
     EmployeeModule,
+    MonthlyClassCountModule,
   ],
   controllers: [AppController],
   providers: [AppService],
