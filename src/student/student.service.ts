@@ -38,8 +38,14 @@ export class StudentService {
   }
 
   async findAll() {
-    return await this.studentModel.find().sort({
-      studentId: 1, // Sort by studentId in ascending order
+    const students = await this.studentModel.find();
+    return students.sort((a, b) => {
+      // Extract last 4 digits from student IDs
+      const lastFourA = a.studentId.slice(-4);
+      const lastFourB = b.studentId.slice(-4);
+
+      // Convert to numbers and compare
+      return parseInt(lastFourA) - parseInt(lastFourB);
     });
   }
 
