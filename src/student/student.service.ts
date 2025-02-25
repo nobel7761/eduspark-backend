@@ -44,8 +44,8 @@ export class StudentService {
       const lastFourA = a.studentId.slice(-4);
       const lastFourB = b.studentId.slice(-4);
 
-      // Convert to numbers and compare
-      return parseInt(lastFourA) - parseInt(lastFourB);
+      // Convert to numbers and compare in reverse order
+      return parseInt(lastFourB) - parseInt(lastFourA);
     });
   }
 
