@@ -38,7 +38,9 @@ export class StudentService {
   }
 
   async findAll() {
-    return await this.studentModel.find().sort({ createdAt: -1 });
+    return await this.studentModel.find().sort({
+      studentId: 1, // Sort by studentId in ascending order
+    });
   }
 
   async findOne(studentId: string) {
