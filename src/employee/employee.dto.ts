@@ -78,10 +78,35 @@ class EducationalBackgroundDto {
   ssc: SchoolEducationDto;
 }
 
+class ClassDto {
+  @IsString()
+  _id: string;
+
+  @IsString()
+  name: string;
+
+  @IsArray()
+  @IsOptional()
+  subjects: any[];
+
+  @IsString()
+  @IsOptional()
+  createdAt?: string;
+
+  @IsString()
+  @IsOptional()
+  updatedAt?: string;
+
+  @IsNumber()
+  @IsOptional()
+  __v?: number;
+}
+
 class ClassPaymentDto {
   @IsArray()
-  @IsString({ each: true })
-  classes: string[];
+  @ValidateNested({ each: true })
+  @Type(() => ClassDto)
+  classes: ClassDto[];
 
   @IsNumber()
   @Min(0)
@@ -94,6 +119,9 @@ export class CreateEmployeeDto {
 
   @IsString()
   lastName: string;
+
+  @IsString()
+  shortName?: string;
 
   @IsString()
   dateOfBirth: Date;

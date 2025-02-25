@@ -99,8 +99,40 @@ class EducationalBackground {
 
 @Schema()
 class ClassPayment {
-  classes: string[];
+  @Prop({ type: [{ type: Object }] })
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ClassDto)
+  classes: ClassDto[];
+
+  @Prop({ required: true })
+  @IsNumber()
+  @Min(0)
   amount: number;
+}
+
+@Schema()
+class ClassDto {
+  @IsString()
+  _id: string;
+
+  @IsString()
+  name: string;
+
+  @IsArray()
+  subjects: any[];
+
+  @IsString()
+  @IsOptional()
+  createdAt?: string;
+
+  @IsString()
+  @IsOptional()
+  updatedAt?: string;
+
+  @IsNumber()
+  @IsOptional()
+  __v?: number;
 }
 
 @Schema({ timestamps: true })
@@ -112,6 +144,11 @@ export class Employee {
   @Prop({ required: true, message: 'Last name is required' })
   @IsString()
   lastName: string;
+
+  @Prop()
+  @IsOptional()
+  @IsString()
+  shortName?: string;
 
   @Prop({ required: true, message: 'Date of birth is required' })
   @IsString()
@@ -205,7 +242,7 @@ export class Employee {
   @IsEnum(PaymentMethod)
   paymentMethod: PaymentMethod;
 
-  @Prop({ type: [{ classes: [String], amount: Number }] })
+  @Prop({ type: [{ type: ClassPayment }] })
   @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })
@@ -215,7 +252,6 @@ export class Employee {
   @Prop()
   @IsOptional()
   @IsNumber()
-  @Min(0)
   paymentPerMonth?: number;
 
   @Prop({ type: Date })

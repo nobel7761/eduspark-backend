@@ -216,7 +216,7 @@ export class MonthlyClassCountService {
       // Get all records for this employee (both direct and proxy)
       const employeeRecords = monthlyRecords.filter(
         (record) =>
-          record.employeeId._id.toString() === employee._id.toString(),
+          record?.employeeId?._id?.toString() === employee?._id?.toString(),
       );
 
       // Group records by date
@@ -261,10 +261,25 @@ export class MonthlyClassCountService {
         };
       });
 
+      // Calculate total classes taken this month so far
+      const totalClassTakenThisMonthSoFar = {
+        '3-8': 0,
+        '9-10': 0,
+        '11-12': 0,
+      };
+
+      // Sum up all classes for each range across all dates
+      classCountDetails.forEach((detail) => {
+        totalClassTakenThisMonthSoFar['3-8'] += detail.classCount['3-8'];
+        totalClassTakenThisMonthSoFar['9-10'] += detail.classCount['9-10'];
+        totalClassTakenThisMonthSoFar['11-12'] += detail.classCount['11-12'];
+      });
+
       return {
-        employeeId: employee._id,
+        shortName: employee.shortName,
         employeeName: `${employee.firstName} ${employee.lastName}`,
         classCountDetails,
+        totalClassTakenThisMonthSoFar,
       };
     });
 

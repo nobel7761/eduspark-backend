@@ -98,15 +98,23 @@ export class ClassService {
 
   async findAll() {
     try {
-      return await this.classModel
+      const classes = await this.classModel
         .find()
         .populate({
           path: 'subjects',
           model: 'Subject',
           select: '_id name',
         })
-        .sort({ name: 1 })
         .exec();
+
+      // Custom sort order for class names
+      const sortOrder = ['3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
+
+      return classes.sort((a, b) => {
+        const aIndex = sortOrder.indexOf(a.name);
+        const bIndex = sortOrder.indexOf(b.name);
+        return aIndex - bIndex;
+      });
     } catch (error) {
       throw new BadRequestException(
         `Failed to fetch classes: ${error || 'Unknown error occurred'}`,

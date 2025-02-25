@@ -91,6 +91,7 @@ export class EmployeeService {
     const employee = await this.employeeModel.findOne({
       employeeId: employeeId,
     });
+
     if (!employee) {
       throw new NotFoundException(`Employee with ID ${employeeId} not found`);
     }
@@ -138,10 +139,19 @@ export class EmployeeService {
         }
       }
 
+      // Clean up the update DTO
+      const cleanedDto = Object.fromEntries(
+        Object.entries(updateEmployeeDto).filter(([value]) => {
+          if (typeof value === 'boolean') return true;
+          if (value === '') return false;
+          return value !== undefined && value !== null;
+        }),
+      );
+
       const updatedEmployee = await this.employeeModel.findByIdAndUpdate(
         existingEmployee._id,
-        updateEmployeeDto,
-        { new: true },
+        { $set: cleanedDto },
+        { new: true, runValidators: true },
       );
       return updatedEmployee;
     } catch (error) {
