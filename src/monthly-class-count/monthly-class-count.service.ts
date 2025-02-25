@@ -275,11 +275,43 @@ export class MonthlyClassCountService {
         totalClassTakenThisMonthSoFar['11-12'] += detail.classCount['11-12'];
       });
 
+      // Calculate total income for each class range
+      const totalIncomeThisMonthSoFar = {
+        '3-8': 0,
+        '9-10': 0,
+        '11-12': 0,
+        total: 0,
+      };
+
+      // Get payment rates for each class range
+      employee.paymentPerClass?.forEach((payment) => {
+        payment.classes.forEach((cls) => {
+          const classNumber = parseInt(cls.name);
+          if (classNumber >= 3 && classNumber <= 8) {
+            totalIncomeThisMonthSoFar['3-8'] =
+              totalClassTakenThisMonthSoFar['3-8'] * payment.amount;
+          } else if (classNumber >= 9 && classNumber <= 10) {
+            totalIncomeThisMonthSoFar['9-10'] =
+              totalClassTakenThisMonthSoFar['9-10'] * payment.amount;
+          } else if (classNumber >= 11 && classNumber <= 12) {
+            totalIncomeThisMonthSoFar['11-12'] =
+              totalClassTakenThisMonthSoFar['11-12'] * payment.amount;
+          }
+        });
+      });
+
+      // Calculate total income across all ranges
+      totalIncomeThisMonthSoFar.total =
+        totalIncomeThisMonthSoFar['3-8'] +
+        totalIncomeThisMonthSoFar['9-10'] +
+        totalIncomeThisMonthSoFar['11-12'];
+
       return {
         shortName: employee.shortName,
         employeeName: `${employee.firstName} ${employee.lastName}`,
         classCountDetails,
         totalClassTakenThisMonthSoFar,
+        totalIncomeThisMonthSoFar,
       };
     });
 

@@ -36,6 +36,7 @@ export class Student {
   religion: Religion;
 
   @IsOptional()
+  @Prop({ required: false })
   @IsString()
   phoneNumber?: string;
 
