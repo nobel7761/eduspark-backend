@@ -2,7 +2,7 @@ import { Types } from 'mongoose';
 
 interface BaseClass {
   employeeId: Types.ObjectId;
-  classId: Types.ObjectId;
+  classIds: Types.ObjectId[];
 }
 
 export interface RegularClass extends BaseClass {
@@ -15,6 +15,6 @@ export interface ProxyClass extends BaseClass {
 
 export interface ClassCount {
   employeeId: Types.ObjectId;
-  classId: Types.ObjectId;
+  classIds: Types.ObjectId[];
   totalCount: number;
 }

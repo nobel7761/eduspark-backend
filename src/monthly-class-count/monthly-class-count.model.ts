@@ -14,13 +14,14 @@ import { Types } from 'mongoose';
 @Schema()
 class ClassCount {
   @Prop({
-    type: Types.ObjectId,
+    type: [Types.ObjectId],
     ref: 'Class',
     required: true,
-    message: 'Class id is required',
+    message: 'Class ids are required',
   })
-  @IsMongoId()
-  classId: Types.ObjectId;
+  @IsArray()
+  @IsMongoId({ each: true })
+  classIds: Types.ObjectId[];
 
   @Prop({ required: true, message: 'Count is required' })
   count: number;

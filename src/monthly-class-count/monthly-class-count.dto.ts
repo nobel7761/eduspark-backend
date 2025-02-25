@@ -11,8 +11,9 @@ import {
 } from 'class-validator';
 
 class ClassCountDto {
-  @IsMongoId()
-  classId: string;
+  @IsArray()
+  @IsMongoId({ each: true })
+  classIds: string[];
 
   @IsNumber()
   count: number;

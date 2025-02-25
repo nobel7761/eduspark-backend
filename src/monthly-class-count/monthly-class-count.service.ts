@@ -58,7 +58,7 @@ export class MonthlyClassCountService {
       const record = await this.monthlyClassCountModel.create(createDto);
       return await record.populate([
         'employeeId',
-        'classes.classId',
+        'classes.classIds',
         'proxyClasses.employeeId',
         'proxyClasses.classId',
       ]);
@@ -74,7 +74,7 @@ export class MonthlyClassCountService {
         .find()
         .populate([
           'employeeId',
-          'classes.classId',
+          'classes.classIds',
           'proxyClasses.employeeId',
           'proxyClasses.classId',
         ])
@@ -90,7 +90,7 @@ export class MonthlyClassCountService {
         .findById(id)
         .populate([
           'employeeId',
-          'classes.classId',
+          'classes.classIds',
           'proxyClasses.employeeId',
           'proxyClasses.classId',
         ]);
@@ -111,7 +111,7 @@ export class MonthlyClassCountService {
         .findOne({ employeeId, date })
         .populate([
           'employeeId',
-          'classes.classId',
+          'classes.classIds',
           'proxyClasses.employeeId',
           'proxyClasses.classId',
         ]);
@@ -146,7 +146,7 @@ export class MonthlyClassCountService {
         .findByIdAndUpdate(id, updateDto, { new: true })
         .populate([
           'employeeId',
-          'classes.classId',
+          'classes.classIds',
           'proxyClasses.employeeId',
           'proxyClasses.classId',
         ]);
@@ -205,7 +205,7 @@ export class MonthlyClassCountService {
       })
       .populate([
         'employeeId',
-        'classes.classId',
+        'classes.classIds',
         'proxyClasses.employeeId',
         'proxyClasses.classId',
       ])
@@ -229,16 +229,35 @@ export class MonthlyClassCountService {
 
         // Count regular classes
         record.classes.forEach((classItem) => {
-          const classNumber = parseInt(
-            (classItem.classId as unknown as IClassPopulated).name,
-          );
-          if (classNumber >= 3 && classNumber <= 8) {
-            classCount['3-8'] += classItem.count;
-          } else if (classNumber >= 9 && classNumber <= 10) {
-            classCount['9-10'] += classItem.count;
-          } else if (classNumber >= 11 && classNumber <= 12) {
-            classCount['11-12'] += classItem.count;
-          }
+          const rangeAdded = {
+            '3-8': false,
+            '9-10': false,
+            '11-12': false,
+          };
+
+          classItem.classIds.forEach((classId) => {
+            const classNumber = parseInt(
+              (classId as unknown as IClassPopulated).name,
+            );
+            if (classNumber >= 3 && classNumber <= 8 && !rangeAdded['3-8']) {
+              classCount['3-8'] += classItem.count;
+              rangeAdded['3-8'] = true;
+            } else if (
+              classNumber >= 9 &&
+              classNumber <= 10 &&
+              !rangeAdded['9-10']
+            ) {
+              classCount['9-10'] += classItem.count;
+              rangeAdded['9-10'] = true;
+            } else if (
+              classNumber >= 11 &&
+              classNumber <= 12 &&
+              !rangeAdded['11-12']
+            ) {
+              classCount['11-12'] += classItem.count;
+              rangeAdded['11-12'] = true;
+            }
+          });
         });
 
         // Count proxy classes for this employee
