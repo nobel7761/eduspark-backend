@@ -13,6 +13,7 @@ import {
 import { ModuleRef } from '@nestjs/core';
 import { EmployeeService } from '../employee/employee.service';
 import { IClassPopulated } from 'src/class/class.types';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class MonthlyClassCountService {
@@ -21,6 +22,7 @@ export class MonthlyClassCountService {
     @InjectModel(MonthlyClassCount.name)
     private monthlyClassCountModel: Model<MonthlyClassCount>,
     private moduleRef: ModuleRef,
+    private configService: ConfigService,
   ) {}
 
   onModuleInit() {
@@ -179,21 +181,30 @@ export class MonthlyClassCountService {
   }
 
   async findCurrentMonthClassCountForClassBasedEmployees(date: Date) {
-    const employees = await this.employeeService.findAllClassBasedTeachers();
+    const timezone = this.configService.get<string>('timezone');
+
+    // Create date object with timezone
+    const currentDate = new Date(
+      date.toLocaleString('en-US', { timeZone: timezone }),
+    );
 
     // Get the first day of the current month
-    const startOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+    const startOfMonth = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      1,
+    );
+    startOfMonth.setHours(0, 0, 0, 0);
 
     // Get the last day of the month
     const endOfMonth = new Date(
-      date.getFullYear(),
-      date.getMonth() + 1,
+      currentDate.getFullYear(),
+      currentDate.getMonth() + 1,
       0,
-      23,
-      59,
-      59,
-      999,
     );
+    endOfMonth.setHours(23, 59, 59, 999);
+
+    const employees = await this.employeeService.findAllClassBasedTeachers();
 
     // Get all records for the month
     const monthlyRecords = await this.monthlyClassCountModel
