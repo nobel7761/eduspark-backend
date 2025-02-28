@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ConfigModule } from '@nestjs/config';
 import { MonthlyClassCountService } from './monthly-class-count.service';
 import { MonthlyClassCountController } from './monthly-class-count.controller';
 import {
@@ -9,6 +10,7 @@ import {
 
 @Module({
   imports: [
+    ConfigModule,
     MongooseModule.forFeature([
       { name: MonthlyClassCount.name, schema: MonthlyClassCountSchema },
     ]),
