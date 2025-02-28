@@ -8,5 +8,4 @@ export default () => ({
   bcrypt: {
     saltRounds: 10,
   },
-  timezone: process.env.TZ || 'UTC',
 });
