@@ -56,4 +56,5 @@ export interface Employee {
   employeeId: string;
   comments?: string;
   employeeType: EmployeeType;
+  isDirector?: boolean;
 }

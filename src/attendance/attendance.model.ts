@@ -1,7 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
-import { IsDateString, IsString, IsOptional } from 'class-validator';
-import { Trim } from '../decorators/trim.decorator';
+import { HydratedDocument, Types } from 'mongoose';
+import {
+  IsBoolean,
+  IsDateString,
+  IsMongoId,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export type AttendanceDocument = HydratedDocument<Attendance>;
 
@@ -11,27 +16,17 @@ export type AttendanceDocument = HydratedDocument<Attendance>;
   toObject: { virtuals: true },
 })
 export class Attendance {
-  @Trim()
-  @IsString()
-  @Prop({ required: true })
-  staffId: string;
-
-  @Trim()
-  @IsString()
-  @Prop({ required: true })
-  staffName: string;
+  @Prop({ type: Types.ObjectId, ref: 'Employee', required: true })
+  @IsMongoId()
+  employeeId: Types.ObjectId;
 
   @IsDateString()
-  @Prop({ required: true })
-  date: string;
+  @Prop({ type: Date, required: true })
+  date: Date;
 
-  @IsString()
-  @Prop({ required: true })
-  inTime: string;
-
-  @IsString()
-  @Prop({ required: true })
-  outTime: string;
+  @IsBoolean()
+  @Prop({ required: true, default: false })
+  isPresentOnTime: boolean;
 
   @IsOptional()
   @IsString()

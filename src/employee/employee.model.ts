@@ -11,6 +11,7 @@ import {
   Min,
   Max,
   IsArray,
+  IsBoolean,
 } from 'class-validator';
 import { HydratedDocument } from 'mongoose';
 import { Gender, Group, EmployeeType } from '../enums/common.enum';
@@ -273,6 +274,14 @@ export class Employee {
   })
   @IsEnum(EmployeeType)
   employeeType: EmployeeType;
+
+  @Prop({
+    required: false,
+    default: false,
+  })
+  @IsOptional()
+  @IsBoolean()
+  isDirector?: boolean;
 }
 
 export const EmployeeSchema = SchemaFactory.createForClass(Employee);

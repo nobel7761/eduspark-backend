@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
   // UseGuards,
 } from '@nestjs/common';
 import { AttendanceService } from './attendance.service';
@@ -25,6 +26,19 @@ export class AttendanceController {
   @Get()
   findAll() {
     return this.attendanceService.findAll();
+  }
+
+  @Get('employee')
+  findByEmployeeAndDate(
+    @Query('employeeId') employeeId: string,
+    @Query('date') date: Date,
+  ) {
+    return this.attendanceService.findByEmployeeAndDate(employeeId, date);
+  }
+
+  @Get('employee/:employeeId/current-month')
+  findCurrentMonthByEmployeeId(@Param('employeeId') employeeId: string) {
+    return this.attendanceService.findCurrentMonthByEmployeeId(employeeId);
   }
 
   @Get(':id')

@@ -10,6 +10,7 @@ import {
   Max,
   IsArray,
   ValidateIf,
+  IsBoolean,
 } from 'class-validator';
 import { Gender, Group, EmployeeType } from '../enums/common.enum';
 import { PaymentMethod } from '../enums/payment.enum';
@@ -200,6 +201,10 @@ export class CreateEmployeeDto {
   @IsOptional()
   @IsString()
   comments?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  isDirector?: boolean;
 }
 
 export class UpdateEmployeeDto extends CreateEmployeeDto {

@@ -274,4 +274,16 @@ export class EmployeeService {
       );
     }
   }
+
+  async findAllEmployeesWithoutDirector() {
+    try {
+      return await this.employeeModel
+        .find({ isDirector: { $ne: true } })
+        .sort({ createdAt: -1 });
+    } catch (error) {
+      throw new BadRequestException(
+        `Failed to fetch non-director employees: ${error || 'Unknown error occurred'}`,
+      );
+    }
+  }
 }
