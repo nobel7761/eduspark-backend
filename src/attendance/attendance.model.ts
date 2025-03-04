@@ -24,9 +24,14 @@ export class Attendance {
   @Prop({ type: Date, required: true })
   date: Date;
 
+  @IsOptional()
+  @IsBoolean()
+  @Prop({ type: Boolean, required: false, default: null })
+  isPresentOnTime: boolean | null;
+
   @IsBoolean()
   @Prop({ required: true, default: false })
-  isPresentOnTime: boolean;
+  absent: boolean;
 
   @IsOptional()
   @IsString()

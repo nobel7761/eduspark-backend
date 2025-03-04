@@ -13,8 +13,12 @@ export class CreateAttendanceDto {
   @IsDateString()
   date: Date;
 
+  @IsOptional()
   @IsBoolean()
-  isPresentOnTime: boolean;
+  isPresentOnTime?: boolean | null;
+
+  @IsBoolean()
+  absent: boolean;
 
   @IsOptional()
   @IsString()
@@ -24,7 +28,11 @@ export class CreateAttendanceDto {
 export class UpdateAttendanceDto {
   @IsOptional()
   @IsBoolean()
-  isPresentOnTime?: boolean;
+  isPresentOnTime?: boolean | null;
+
+  @IsOptional()
+  @IsBoolean()
+  absent?: boolean;
 
   @IsOptional()
   @IsDateString()

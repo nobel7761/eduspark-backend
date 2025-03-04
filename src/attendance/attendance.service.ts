@@ -149,15 +149,25 @@ export class AttendanceService {
 
       const totalDays = attendanceRecords.length;
       const presentOnTimeDays = attendanceRecords.filter(
-        (record) => record.isPresentOnTime,
+        (record) => record.isPresentOnTime === true,
       ).length;
-      const lateOrAbsentDays = totalDays - presentOnTimeDays;
+      const lateDays = attendanceRecords.filter(
+        (record) => record.isPresentOnTime === false,
+      ).length;
+      const absentDays = attendanceRecords.filter(
+        (record) => record.absent === true,
+      ).length;
+      const unmarkedDays = attendanceRecords.filter(
+        (record) => record.isPresentOnTime === null && !record.absent,
+      ).length;
 
       return {
         employee: attendanceRecords[0]?.employeeId || null,
         totalDays,
         presentOnTimeDays,
-        lateOrAbsentDays,
+        lateDays,
+        absentDays,
+        unmarkedDays,
         records: attendanceRecords,
       };
     } catch (error) {
