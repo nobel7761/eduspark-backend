@@ -36,11 +36,6 @@ export class AttendanceController {
     return this.attendanceService.findByEmployeeAndDate(employeeId, date);
   }
 
-  @Get('employee/:employeeId/current-month')
-  findCurrentMonthByEmployeeId(@Param('employeeId') employeeId: string) {
-    return this.attendanceService.findCurrentMonthByEmployeeId(employeeId);
-  }
-
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.attendanceService.findOne(id);

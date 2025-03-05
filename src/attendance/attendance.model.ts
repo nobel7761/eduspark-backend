@@ -1,12 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
 import {
-  IsBoolean,
   IsDateString,
+  IsEnum,
   IsMongoId,
   IsOptional,
   IsString,
 } from 'class-validator';
+import { AttendanceStatus } from '../enums/attandance.enum';
 
 export type AttendanceDocument = HydratedDocument<Attendance>;
 
@@ -24,14 +25,9 @@ export class Attendance {
   @Prop({ type: Date, required: true })
   date: Date;
 
-  @IsOptional()
-  @IsBoolean()
-  @Prop({ type: Boolean, required: false, default: null })
-  isPresentOnTime: boolean | null;
-
-  @IsBoolean()
-  @Prop({ required: true, default: false })
-  absent: boolean;
+  @IsEnum(AttendanceStatus)
+  @Prop({ type: String, enum: AttendanceStatus, required: true })
+  status: AttendanceStatus;
 
   @IsOptional()
   @IsString()

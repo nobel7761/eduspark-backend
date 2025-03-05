@@ -1,10 +1,11 @@
 import {
-  IsBoolean,
   IsDateString,
+  IsEnum,
   IsMongoId,
   IsOptional,
   IsString,
 } from 'class-validator';
+import { AttendanceStatus } from '../enums/attandance.enum';
 
 export class CreateAttendanceDto {
   @IsMongoId()
@@ -13,12 +14,8 @@ export class CreateAttendanceDto {
   @IsDateString()
   date: Date;
 
-  @IsOptional()
-  @IsBoolean()
-  isPresentOnTime?: boolean | null;
-
-  @IsBoolean()
-  absent: boolean;
+  @IsEnum(AttendanceStatus)
+  status: AttendanceStatus;
 
   @IsOptional()
   @IsString()
@@ -27,16 +24,12 @@ export class CreateAttendanceDto {
 
 export class UpdateAttendanceDto {
   @IsOptional()
-  @IsBoolean()
-  isPresentOnTime?: boolean | null;
-
-  @IsOptional()
-  @IsBoolean()
-  absent?: boolean;
-
-  @IsOptional()
   @IsDateString()
   date?: Date;
+
+  @IsOptional()
+  @IsEnum(AttendanceStatus)
+  status?: AttendanceStatus;
 
   @IsOptional()
   @IsString()
