@@ -98,6 +98,16 @@ export class EmployeeService {
     return employee;
   }
 
+  async findByEmployeeDatabaseId(employeeId: string) {
+    const employee = await this.employeeModel.findById(employeeId);
+
+    if (!employee) {
+      throw new NotFoundException(`Employee with ID ${employeeId} not found`);
+    }
+
+    return employee;
+  }
+
   async update(employeeId: string, updateEmployeeDto: UpdateEmployeeDto) {
     try {
       // Check if employee exists
@@ -283,6 +293,18 @@ export class EmployeeService {
     } catch (error) {
       throw new BadRequestException(
         `Failed to fetch non-director employees: ${error || 'Unknown error occurred'}`,
+      );
+    }
+  }
+
+  async findAllDirectors() {
+    try {
+      return await this.employeeModel
+        .find({ isDirector: true })
+        .sort({ createdAt: -1 });
+    } catch (error) {
+      throw new BadRequestException(
+        `Failed to fetch directors: ${error || 'Unknown error occurred'}`,
       );
     }
   }
