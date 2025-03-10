@@ -163,7 +163,8 @@ export class AttendanceService {
 
       const attendanceQuery = this.attendanceModel
         .find(query)
-        .populate('employeeId');
+        .populate('employeeId')
+        .sort({ date: 1 });
 
       return attendanceQuery;
     } catch (error) {
