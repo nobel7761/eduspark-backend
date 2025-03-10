@@ -347,4 +347,161 @@ export class MonthlyClassCountService {
 
     return result;
   }
+
+  async findByFilters(month: number, year: number) {
+    try {
+      // Create start and end dates for the specified month
+      const startOfMonth = new Date(Date.UTC(year, month - 1, 1, 0, 0, 0, 0));
+      const endOfMonth = new Date(Date.UTC(year, month, 0, 23, 59, 59, 999));
+
+      // Get all class-based teachers
+      const employees = await this.employeeService.findAllClassBasedTeachers();
+
+      // Get all records for the month
+      const monthlyRecords = await this.monthlyClassCountModel
+        .find({
+          date: {
+            $gte: startOfMonth,
+            $lte: endOfMonth,
+          },
+        })
+        .populate([
+          'employeeId',
+          'classes.classIds',
+          'proxyClasses.employeeId',
+          'proxyClasses.classId',
+        ])
+        .sort({ date: 1 });
+
+      // Process data for each employee
+      const result = employees.map((employee) => {
+        // Get all records for this employee (both direct and proxy)
+        const employeeRecords = monthlyRecords.filter(
+          (record) =>
+            record?.employeeId?._id?.toString() === employee?._id?.toString(),
+        );
+
+        // Group records by date
+        const classCountDetails = employeeRecords.map((record) => {
+          const classCount = {
+            '3-8': 0,
+            '9-10': 0,
+            '11-12': 0,
+          };
+
+          // Count regular classes
+          record.classes.forEach((classItem) => {
+            const rangeAdded = {
+              '3-8': false,
+              '9-10': false,
+              '11-12': false,
+            };
+
+            classItem.classIds.forEach((classId) => {
+              const classNumber = parseInt(
+                (classId as unknown as IClassPopulated).name,
+              );
+              if (classNumber >= 3 && classNumber <= 8 && !rangeAdded['3-8']) {
+                classCount['3-8'] += classItem.count;
+                rangeAdded['3-8'] = true;
+              } else if (
+                classNumber >= 9 &&
+                classNumber <= 10 &&
+                !rangeAdded['9-10']
+              ) {
+                classCount['9-10'] += classItem.count;
+                rangeAdded['9-10'] = true;
+              } else if (
+                classNumber >= 11 &&
+                classNumber <= 12 &&
+                !rangeAdded['11-12']
+              ) {
+                classCount['11-12'] += classItem.count;
+                rangeAdded['11-12'] = true;
+              }
+            });
+          });
+
+          // Count proxy classes for this employee
+          record?.proxyClasses?.forEach((proxyRecord) => {
+            const classNumber = parseInt(
+              (proxyRecord.classId as unknown as IClassPopulated).name,
+            );
+            if (classNumber >= 3 && classNumber <= 8) {
+              classCount['3-8'] += 1;
+            } else if (classNumber >= 9 && classNumber <= 10) {
+              classCount['9-10'] += 1;
+            } else if (classNumber >= 11 && classNumber <= 12) {
+              classCount['11-12'] += 1;
+            }
+          });
+
+          return {
+            date: record.date,
+            classCount,
+          };
+        });
+
+        // Calculate total classes taken this month
+        const totalClassTakenThisMonthSoFar = {
+          '3-8': 0,
+          '9-10': 0,
+          '11-12': 0,
+        };
+
+        // Sum up all classes for each range across all dates
+        classCountDetails.forEach((detail) => {
+          totalClassTakenThisMonthSoFar['3-8'] += detail.classCount['3-8'];
+          totalClassTakenThisMonthSoFar['9-10'] += detail.classCount['9-10'];
+          totalClassTakenThisMonthSoFar['11-12'] += detail.classCount['11-12'];
+        });
+
+        // Calculate total income for each class range
+        const totalIncomeThisMonthSoFar = {
+          '3-8': 0,
+          '9-10': 0,
+          '11-12': 0,
+          total: 0,
+        };
+
+        // Get payment rates for each class range
+        employee.paymentPerClass?.forEach((payment) => {
+          payment.classes.forEach((cls) => {
+            const classNumber = parseInt(cls.name);
+            if (classNumber >= 3 && classNumber <= 8) {
+              totalIncomeThisMonthSoFar['3-8'] =
+                totalClassTakenThisMonthSoFar['3-8'] * payment.amount;
+            } else if (classNumber >= 9 && classNumber <= 10) {
+              totalIncomeThisMonthSoFar['9-10'] =
+                totalClassTakenThisMonthSoFar['9-10'] * payment.amount;
+            } else if (classNumber >= 11 && classNumber <= 12) {
+              totalIncomeThisMonthSoFar['11-12'] =
+                totalClassTakenThisMonthSoFar['11-12'] * payment.amount;
+            }
+          });
+        });
+
+        // Calculate total income across all ranges
+        totalIncomeThisMonthSoFar.total =
+          totalIncomeThisMonthSoFar['3-8'] +
+          totalIncomeThisMonthSoFar['9-10'] +
+          totalIncomeThisMonthSoFar['11-12'];
+
+        return {
+          shortName: employee.shortName,
+          employeeName: `${employee.firstName} ${employee.lastName}`,
+          classCountDetails,
+          totalClassTakenThisMonthSoFar,
+          totalIncomeThisMonthSoFar,
+        };
+      });
+
+      return result;
+    } catch (error) {
+      if (error instanceof NotFoundException) throw error;
+      throw new BadRequestException(
+        `Failed to fetch monthly class count records: ${error}`,
+      );
+    }
+  }
 }
