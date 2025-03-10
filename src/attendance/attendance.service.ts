@@ -8,6 +8,17 @@ import { Model } from 'mongoose';
 import { Attendance } from './attendance.model';
 import { CreateAttendanceDto, UpdateAttendanceDto } from './attendance.dto';
 import { ConfigService } from '@nestjs/config';
+import { AttendanceStatus } from '../enums/attandance.enum';
+
+interface DateQuery {
+  $gte?: Date;
+  $lte?: Date;
+}
+interface AttendanceQuery {
+  date?: DateQuery;
+  status?: AttendanceStatus;
+  employeeId?: string;
+}
 
 @Injectable()
 export class AttendanceService {
@@ -118,6 +129,47 @@ export class AttendanceService {
       if (error instanceof NotFoundException) throw error;
       throw new BadRequestException(
         `Failed to delete attendance record: ${error}`,
+      );
+    }
+  }
+
+  async findByFilters(
+    month: number,
+    year: number,
+    status?: AttendanceStatus,
+    employeeId?: string,
+  ) {
+    try {
+      const query: AttendanceQuery = {};
+
+      // Create start and end dates for the specified month using UTC
+      const startOfMonth = new Date(Date.UTC(year, month - 1, 1, 0, 0, 0, 0));
+      const endOfMonth = new Date(Date.UTC(year, month, 0, 23, 59, 59, 999));
+
+      query.date = {
+        $gte: startOfMonth,
+        $lte: endOfMonth,
+      };
+
+      // Add status filter if provided
+      if (status) {
+        query.status = status;
+      }
+
+      // Filter by employee name if provided
+      if (employeeId) {
+        query.employeeId = employeeId;
+      }
+
+      const attendanceQuery = this.attendanceModel
+        .find(query)
+        .populate('employeeId');
+
+      return attendanceQuery;
+    } catch (error) {
+      if (error instanceof NotFoundException) throw error;
+      throw new BadRequestException(
+        `Failed to fetch attendance records: ${error}`,
       );
     }
   }
