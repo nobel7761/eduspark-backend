@@ -1,36 +1,33 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
-import {
-  ExtractJwt,
-  Strategy,
-  StrategyOptionsWithoutRequest,
-} from 'passport-jwt';
-import { UsersService } from '../../users/users.service';
-import { JwtPayload } from '../jwt-payload';
+import { ExtractJwt, Strategy } from 'passport-jwt';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { User, UserDocument } from '../../users/user.model';
+
+interface JwtPayload {
+  sub: string;
+  iat: number;
+  exp: number;
+}
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor(
-    private readonly userService: UsersService,
-    private readonly configService: ConfigService,
-  ) {
-    const secretOrKey =
-      configService.get<string>('JWT_ACCESS_SECRET') ?? 'default-secret';
+  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {
+    if (!process.env.JWT_SECRET) {
+      throw new Error('JWT_SECRET is not defined');
+    }
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      ignoreExpiration: false,
-      secretOrKey,
-      passReqToCallback: false,
-    } as StrategyOptionsWithoutRequest);
+      secretOrKey: process.env.JWT_SECRET,
+    });
   }
 
-  async validate(payload: JwtPayload): Promise<{ user: Express.User }> {
-    const user = await this.userService.findById(payload.uid);
-    if (!user) {
+  async validate(payload: JwtPayload) {
+    const user = await this.userModel.findById(payload.sub);
+    if (!user || !user.isActive) {
       throw new UnauthorizedException();
     }
-
-    return { user };
+    return user;
   }
 }

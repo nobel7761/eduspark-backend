@@ -10,9 +10,10 @@ export enum Religion {
   Buddhism = 'Buddhism',
 }
 
-export enum UserRole {
-  ADMIN = 'admin',
-  USER = 'user',
+export enum Role {
+  SUPER_ADMIN = 'SUPER_ADMIN',
+  ADMIN = 'ADMIN',
+  USER = 'USER',
 }
 
 export enum Group {

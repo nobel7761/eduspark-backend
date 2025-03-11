@@ -5,7 +5,7 @@ export const hashPassword = (password: string) => {
   return encrypted;
 };
 
-export const comparePassword = (loginPassword: string, dbPassword: string) => {
+export const comparePassword = (dbPassword: string, loginPassword: string) => {
   const isPasswordValid = compareSync(loginPassword, dbPassword);
   return isPasswordValid;
 };
