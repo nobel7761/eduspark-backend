@@ -6,12 +6,13 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { hashPassword } from '../utils/password.util';
-import { User } from './user.model';
+import { User, UserDocument } from './user.model';
+import { UserType } from '../enums/users.enum';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectModel(User.name) private readonly userModel: Model<User>,
+    @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
   ) {}
 
   async create(user: Partial<User>) {
@@ -19,6 +20,7 @@ export class UsersService {
       throw new Error('Password is required');
     }
     const hashedPassword = hashPassword(user.password);
+    user.userType = UserType.DIRECTOR;
 
     return await this.userModel.create({
       ...user,
@@ -30,15 +32,34 @@ export class UsersService {
     if (id && !Types.ObjectId.isValid(id)) {
       throw new BadRequestException('Invalid user ID');
     }
-    return await this.userModel
+
+    const user = await this.userModel
       .findById(id)
       .select(excludePassword ? { password: 0 } : {});
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return user;
   }
 
   async findByEmail(email: string, excludePassword = true) {
     const user = await this.userModel
       .findOne({ email })
-      .select(excludePassword ? { password: 0 } : {});
+      .select(excludePassword ? '-password' : '+password')
+      .exec();
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return user;
+  }
+
+  async findByEmailForRegister(email: string) {
+    const user = await this.userModel.findOne({ email }).exec();
+
     return user;
   }
 

@@ -7,7 +7,7 @@ export interface IUser {
   email: string;
   password?: string;
   current_password?: string;
-  primaryPhoneNumber: string;
+  phone: string;
   secondaryPhoneNumber?: string;
   status: Status;
   userType: UserType;

@@ -1,12 +1,53 @@
-import { PickType } from '@nestjs/mapped-types';
-import { User } from '../users/user.model';
+import { IsEmail, IsString, MinLength, IsPhoneNumber } from 'class-validator';
 
-export class RegistrationFormData extends PickType(User, [
-  'firstName',
-  'lastName',
-  'email',
-  'password',
-  'primaryPhoneNumber',
-] as const) {}
+export class RegisterDto {
+  @IsString()
+  firstName: string;
 
-export type LoginForm = Pick<User, 'email' | 'password'>;
+  @IsString()
+  lastName: string;
+
+  @IsEmail()
+  email: string;
+
+  @IsPhoneNumber()
+  phone: string;
+
+  @IsString()
+  @MinLength(8)
+  password: string;
+}
+
+export class LoginDto {
+  @IsEmail()
+  email: string;
+
+  @IsString()
+  password: string;
+}
+
+export class ForgotPasswordDto {
+  @IsEmail()
+  email: string;
+}
+
+export class ResetPasswordDto {
+  @IsEmail()
+  email: string;
+
+  @IsString()
+  token: string;
+
+  @IsString()
+  @MinLength(8)
+  newPassword: string;
+}
+
+export class ChangePasswordDto {
+  @IsString()
+  currentPassword: string;
+
+  @IsString()
+  @MinLength(8)
+  newPassword: string;
+}
