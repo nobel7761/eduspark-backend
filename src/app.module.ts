@@ -16,6 +16,8 @@ import { EmployeeModule } from './employee/employee.module';
 import { MonthlyClassCountModule } from './monthly-class-count/monthly-class-count.module';
 import { InvestmentModule } from './investment/investment.module';
 import { EarningModule } from './earning/earning.module';
+import { ExpenseModule } from './expense/expense.module';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -35,6 +37,7 @@ import { EarningModule } from './earning/earning.module';
     MonthlyClassCountModule,
     InvestmentModule,
     EarningModule,
+    ExpenseModule,
   ],
   controllers: [AppController],
   providers: [AppService],
