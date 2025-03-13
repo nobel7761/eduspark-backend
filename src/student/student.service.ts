@@ -57,6 +57,14 @@ export class StudentService {
     return student;
   }
 
+  async findByStudentObjectId(_id: string) {
+    const student = await this.studentModel.findOne({ _id });
+    if (!student) {
+      throw new NotFoundException('Student not found');
+    }
+    return student;
+  }
+
   async update(studentId: string, updateStudentDto: Partial<CreateStudentDto>) {
     const student = await this.studentModel.findOne({ studentId });
     if (!student) {

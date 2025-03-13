@@ -14,6 +14,9 @@ import { SubjectModule } from './subject/subject.module';
 import { ClassModule } from './class/class.module';
 import { EmployeeModule } from './employee/employee.module';
 import { MonthlyClassCountModule } from './monthly-class-count/monthly-class-count.module';
+import { InvestmentModule } from './investment/investment.module';
+import { EarningModule } from './earning/earning.module';
+import { ExpenseModule } from './expense/expense.module';
 
 @Module({
   imports: [
@@ -32,6 +35,9 @@ import { MonthlyClassCountModule } from './monthly-class-count/monthly-class-cou
     ClassModule,
     EmployeeModule,
     MonthlyClassCountModule,
+    InvestmentModule,
+    EarningModule,
+    ExpenseModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -42,6 +42,11 @@ export class EmployeeController {
     return this.employeeService.findAllEmployeesWithoutDirector();
   }
 
+  @Get('/get-directors')
+  findAllDirectors() {
+    return this.employeeService.findAllDirectors();
+  }
+
   @Get(':employeeId')
   findOne(@Param('employeeId') employeeId: string) {
     // Remove any whitespace and validate the employeeId format
