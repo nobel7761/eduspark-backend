@@ -22,6 +22,11 @@ interface StudentEarningQuery {
   date?: DateQuery;
 }
 
+interface EarningAggregateResult {
+  _id: null;
+  totalAmount: number;
+}
+
 @Injectable()
 export class EarningService {
   private studentService: StudentService;
@@ -201,5 +206,48 @@ export class EarningService {
       .sort({ date: -1 })
       .populate(['studentId', 'receivedBy'])
       .exec();
+  }
+
+  async getThisMonthEarningCount(): Promise<number> {
+    const startOfMonth = new Date();
+    startOfMonth.setDate(1);
+    startOfMonth.setHours(0, 0, 0, 0);
+
+    const endOfMonth = new Date();
+    endOfMonth.setMonth(endOfMonth.getMonth() + 1);
+    endOfMonth.setDate(0);
+    endOfMonth.setHours(23, 59, 59, 999);
+
+    const result = await this.earningModel.aggregate<EarningAggregateResult>([
+      {
+        $match: {
+          createdAt: {
+            $gte: startOfMonth,
+            $lte: endOfMonth,
+          },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalAmount: { $sum: '$amount' },
+        },
+      },
+    ]);
+
+    return result.length > 0 ? result[0].totalAmount : 0;
+  }
+
+  async getTotalEarningCount(): Promise<number> {
+    const result = await this.earningModel.aggregate<EarningAggregateResult>([
+      {
+        $group: {
+          _id: null,
+          totalAmount: { $sum: '$amount' },
+        },
+      },
+    ]);
+
+    return result.length > 0 ? result[0].totalAmount : 0;
   }
 }

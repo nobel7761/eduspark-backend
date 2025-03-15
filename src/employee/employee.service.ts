@@ -308,4 +308,10 @@ export class EmployeeService {
       );
     }
   }
+
+  async getTeachersCount(): Promise<number> {
+    return await this.employeeModel.countDocuments({
+      employeeType: EmployeeType.TEACHER,
+    });
+  }
 }

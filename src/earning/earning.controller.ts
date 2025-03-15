@@ -91,6 +91,20 @@ export class EarningController {
     );
   }
 
+  @Get('earning-count/this-month')
+  async getThisMonthEarningCount() {
+    return {
+      count: await this.earningService.getThisMonthEarningCount(),
+    };
+  }
+
+  @Get('earning-count/total')
+  async getTotalEarningCount() {
+    return {
+      count: await this.earningService.getTotalEarningCount(),
+    };
+  }
+
   private isValidDate(dateString: string): boolean {
     const date = new Date(dateString);
     return date instanceof Date && !isNaN(date.getTime());

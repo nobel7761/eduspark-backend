@@ -13,6 +13,11 @@ interface DateQuery {
   $lte?: Date;
 }
 
+interface ExpenseAggregateResult {
+  _id: null;
+  totalAmount: number;
+}
+
 @Injectable()
 export class ExpenseService {
   constructor(
@@ -151,5 +156,48 @@ export class ExpenseService {
       .sort({ date: -1 })
       .populate('paidBy')
       .exec();
+  }
+
+  async getThisMonthExpenseCount(): Promise<number> {
+    const startOfMonth = new Date();
+    startOfMonth.setDate(1);
+    startOfMonth.setHours(0, 0, 0, 0);
+
+    const endOfMonth = new Date();
+    endOfMonth.setMonth(endOfMonth.getMonth() + 1);
+    endOfMonth.setDate(0);
+    endOfMonth.setHours(23, 59, 59, 999);
+
+    const result = await this.expenseModel.aggregate<ExpenseAggregateResult>([
+      {
+        $match: {
+          date: {
+            $gte: startOfMonth,
+            $lte: endOfMonth,
+          },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalAmount: { $sum: '$amount' },
+        },
+      },
+    ]);
+
+    return result.length > 0 ? result[0].totalAmount : 0;
+  }
+
+  async getTotalExpenseCount(): Promise<number> {
+    const result = await this.expenseModel.aggregate<ExpenseAggregateResult>([
+      {
+        $group: {
+          _id: null,
+          totalAmount: { $sum: '$amount' },
+        },
+      },
+    ]);
+
+    return result.length > 0 ? result[0].totalAmount : 0;
   }
 }

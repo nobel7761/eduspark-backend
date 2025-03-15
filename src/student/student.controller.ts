@@ -57,4 +57,21 @@ export class StudentController {
   remove(@Param('studentId') studentId: string) {
     return this.studentService.remove(studentId);
   }
+
+  @Get('student-count/total')
+  async getTotalStudentsCount() {
+    return {
+      count: await this.studentService.getStudentsCount(),
+    };
+  }
+
+  @Get('student-count/by-gender')
+  async getStudentsCountByGender() {
+    return await this.studentService.getStudentsCountByGender();
+  }
+
+  @Get('student-count/by-class')
+  async getStudentsCountByClass() {
+    return await this.studentService.getStudentsCountByClass();
+  }
 }

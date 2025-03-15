@@ -60,4 +60,11 @@ export class InvestmentController {
   remove(@Param('id') id: string) {
     return this.investmentService.remove(id);
   }
+
+  @Get('investment-count/total')
+  async getTotalInvestmentCount() {
+    return {
+      count: await this.investmentService.getTotalInvestmentCount(),
+    };
+  }
 }

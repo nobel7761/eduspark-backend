@@ -31,6 +31,11 @@ interface PopulatedEmployee {
   lastName: string;
 }
 
+interface InvestmentAggregateResult {
+  _id: null;
+  totalAmount: number;
+}
+
 @Injectable()
 export class InvestmentService {
   constructor(
@@ -211,5 +216,19 @@ export class InvestmentService {
         `Failed to calculate total investment: ${error}`,
       );
     }
+  }
+
+  async getTotalInvestmentCount(): Promise<number> {
+    const result =
+      await this.investmentModel.aggregate<InvestmentAggregateResult>([
+        {
+          $group: {
+            _id: null,
+            totalAmount: { $sum: '$amount' },
+          },
+        },
+      ]);
+
+    return result.length > 0 ? result[0].totalAmount : 0;
   }
 }

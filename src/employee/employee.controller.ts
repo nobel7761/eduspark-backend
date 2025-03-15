@@ -27,6 +27,13 @@ export class EmployeeController {
     return this.employeeService.findAll();
   }
 
+  @Get('employee-count/teachers')
+  async getTeachersCount() {
+    return {
+      count: await this.employeeService.getTeachersCount(),
+    };
+  }
+
   @Get('/teachers')
   findAllTeachers() {
     return this.employeeService.findAllTeachers();

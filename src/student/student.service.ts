@@ -8,6 +8,12 @@ import { Model } from 'mongoose';
 import { Student } from './student.model';
 import { CreateStudentDto } from './student.dto';
 import { generateStudentId } from '../utils/generate-student-id';
+import { Gender } from '../enums/common.enum';
+
+interface AggregateResult {
+  _id: string;
+  count: number;
+}
 
 @Injectable()
 export class StudentService {
@@ -159,5 +165,40 @@ export class StudentService {
         `Failed to process bulk delete: ${error || 'Unknown error occurred'}`,
       );
     }
+  }
+
+  async getStudentsCount(): Promise<number> {
+    return await this.studentModel.countDocuments();
+  }
+
+  async getStudentsCountByGender(): Promise<{ male: number; female: number }> {
+    const [maleCount, femaleCount] = await Promise.all([
+      this.studentModel.countDocuments({ gender: Gender.Male }),
+      this.studentModel.countDocuments({ gender: Gender.Female }),
+    ]);
+
+    return {
+      male: maleCount,
+      female: femaleCount,
+    };
+  }
+
+  async getStudentsCountByClass(): Promise<Record<string, number>> {
+    const result = await this.studentModel.aggregate<AggregateResult>([
+      {
+        $group: {
+          _id: '$class',
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $sort: { _id: 1 },
+      },
+    ]);
+
+    return result.reduce<Record<string, number>>((acc, { _id, count }) => {
+      acc[_id] = count;
+      return acc;
+    }, {});
   }
 }
