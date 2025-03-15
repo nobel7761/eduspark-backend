@@ -96,7 +96,7 @@ export class ExpenseService {
           },
         })
         .populate('paidBy')
-        .sort({ date: -1 })
+        .sort({ date: 1, createdAt: 1 })
         .lean();
 
       // Calculate total expenses
