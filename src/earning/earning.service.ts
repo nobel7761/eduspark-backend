@@ -11,6 +11,7 @@ import { StudentService } from '../student/student.service';
 import { ModuleRef } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
 import { PaymentType } from '../enums/earning.enum';
+import { ExpenseService } from '../expense/expense.service';
 
 interface DateQuery {
   $gte?: Date;
@@ -30,6 +31,7 @@ interface EarningAggregateResult {
 @Injectable()
 export class EarningService {
   private studentService: StudentService;
+  private expenseService: ExpenseService;
   constructor(
     @InjectModel(Earning.name) private earningModel: Model<Earning>,
     private moduleRef: ModuleRef,
@@ -38,6 +40,9 @@ export class EarningService {
 
   onModuleInit() {
     this.studentService = this.moduleRef.get(StudentService, {
+      strict: false,
+    });
+    this.expenseService = this.moduleRef.get(ExpenseService, {
       strict: false,
     });
   }
@@ -85,6 +90,7 @@ export class EarningService {
     try {
       const earning = await this.earningModel
         .findById(id)
+        .sort({ date: 1, createdAt: 1 })
         .populate(['studentId', 'receivedBy']);
       if (!earning) {
         throw new NotFoundException('Earning not found');
@@ -140,7 +146,7 @@ export class EarningService {
           },
         })
         .populate(['studentId', 'receivedBy'])
-        .sort({ date: -1 })
+        .sort({ date: 1, createdAt: 1 })
         .lean();
 
       // Calculate total earnings
@@ -203,7 +209,7 @@ export class EarningService {
 
     return this.earningModel
       .find(query)
-      .sort({ date: -1 })
+      .sort({ date: 1, createdAt: 1 })
       .populate(['studentId', 'receivedBy'])
       .exec();
   }
@@ -221,7 +227,7 @@ export class EarningService {
     const result = await this.earningModel.aggregate<EarningAggregateResult>([
       {
         $match: {
-          createdAt: {
+          date: {
             $gte: startOfMonth,
             $lte: endOfMonth,
           },
@@ -249,5 +255,13 @@ export class EarningService {
     ]);
 
     return result.length > 0 ? result[0].totalAmount : 0;
+  }
+
+  async getTotalProfit(): Promise<number> {
+    const [totalEarning, totalExpense] = await Promise.all([
+      this.getTotalEarningCount(),
+      this.expenseService.getTotalExpenseCount(),
+    ]);
+    return totalEarning - totalExpense;
   }
 }

@@ -50,21 +50,6 @@ export class EarningController {
     return this.earningService.findMonthlyEarnings(monthNum, yearNum);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.earningService.findOne(id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateEarningDto: UpdateEarningDto) {
-    return this.earningService.update(id, updateEarningDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.earningService.remove(id);
-  }
-
   @Get('student/:studentId')
   findStudentEarnings(
     @Param('studentId') studentId: string,
@@ -103,6 +88,28 @@ export class EarningController {
     return {
       count: await this.earningService.getTotalEarningCount(),
     };
+  }
+
+  @Get('total-profit')
+  async getTotalProfit() {
+    return {
+      count: await this.earningService.getTotalProfit(),
+    };
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.earningService.findOne(id);
+  }
+
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updateEarningDto: UpdateEarningDto) {
+    return this.earningService.update(id, updateEarningDto);
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.earningService.remove(id);
   }
 
   private isValidDate(dateString: string): boolean {
