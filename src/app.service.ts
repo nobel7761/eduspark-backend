@@ -9,6 +9,6 @@ export class AppService {
   getHello(): string {
     const isConnected =
       this.connection.readyState === ConnectionStates.connected;
-    return `Hello World!!!!! MongoDB ${isConnected ? 'is' : 'is not'} connected`;
+    return `MongoDB ${isConnected ? 'is' : 'is not'} connected`;
   }
 }
