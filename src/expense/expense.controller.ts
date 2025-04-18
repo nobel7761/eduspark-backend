@@ -82,19 +82,19 @@ export class ExpenseController {
     return this.expenseService.remove(id);
   }
 
-  @Get('expense-count/this-month')
-  async getThisMonthExpenseCount() {
-    return {
-      count: await this.expenseService.getThisMonthExpenseCount(),
-    };
-  }
+  // @Get('expense-count/this-month')
+  // async getThisMonthExpenseCount() {
+  //   return {
+  //     count: await this.expenseService.getThisMonthExpenseCount(),
+  //   };
+  // }
 
-  @Get('expense-count/total')
-  async getTotalExpenseCount() {
-    return {
-      count: await this.expenseService.getTotalExpenseCount(),
-    };
-  }
+  // @Get('expense-count/total')
+  // async getTotalExpenseCount() {
+  //   return {
+  //     count: await this.expenseService.getTotalExpenseCount(),
+  //   };
+  // }
 
   private isValidDate(dateString: string): boolean {
     const date = new Date(dateString);

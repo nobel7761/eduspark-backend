@@ -12,6 +12,8 @@ import { ModuleRef } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
 import { PaymentType } from '../enums/earning.enum';
 import { ExpenseService } from '../expense/expense.service';
+import { EmployeeService } from '../employee/employee.service';
+import { InvestmentService } from '../investment/investment.service';
 
 interface DateQuery {
   $gte?: Date;
@@ -32,6 +34,8 @@ interface EarningAggregateResult {
 export class EarningService {
   private studentService: StudentService;
   private expenseService: ExpenseService;
+  private employeeService: EmployeeService;
+  private investmentService: InvestmentService;
   constructor(
     @InjectModel(Earning.name) private earningModel: Model<Earning>,
     private moduleRef: ModuleRef,
@@ -43,6 +47,12 @@ export class EarningService {
       strict: false,
     });
     this.expenseService = this.moduleRef.get(ExpenseService, {
+      strict: false,
+    });
+    this.employeeService = this.moduleRef.get(EmployeeService, {
+      strict: false,
+    });
+    this.investmentService = this.moduleRef.get(InvestmentService, {
       strict: false,
     });
   }
@@ -263,5 +273,46 @@ export class EarningService {
       this.expenseService.getTotalExpenseCount(),
     ]);
     return totalEarning - totalExpense;
+  }
+
+  async getDashboardItems() {
+    //! Earning
+    const thisMonthEarning = await this.getThisMonthEarningCount();
+    const totalEarning = await this.getTotalEarningCount();
+    const totalProfit = await this.getTotalProfit();
+
+    //! Student
+    const totalStudents = await this.studentService.getStudentsCount();
+    const totalStudentsByGender =
+      await this.studentService.getStudentsCountByGender();
+    const totalStudentsByClass =
+      await this.studentService.getStudentsCountByClass();
+
+    //! Expense
+    const thisMonthExpense =
+      await this.expenseService.getThisMonthExpenseCount();
+    const totalExpense = await this.expenseService.getTotalExpenseCount();
+    const totalFundAmount = await this.expenseService.getTotalFundAmount();
+
+    //! Employee
+    const totalEmployees = await this.employeeService.getTeachersCount();
+
+    //! Investment
+    const totalInvestment =
+      await this.investmentService.getTotalInvestmentCount();
+
+    return {
+      thisMonthEarning,
+      totalEarning,
+      totalProfit,
+      totalStudents,
+      totalStudentsByGender,
+      totalStudentsByClass,
+      thisMonthExpense,
+      totalExpense,
+      totalFundAmount,
+      totalEmployees,
+      totalInvestment,
+    };
   }
 }

@@ -26,6 +26,11 @@ export class EarningController {
     return this.earningService.findAll();
   }
 
+  @Get('get-dashboard-items')
+  getDashboardItems() {
+    return this.earningService.getDashboardItems();
+  }
+
   @Get('monthly')
   findMonthlyEarnings(
     @Query('month') month: string,
@@ -76,26 +81,26 @@ export class EarningController {
     );
   }
 
-  @Get('earning-count/this-month')
-  async getThisMonthEarningCount() {
-    return {
-      count: await this.earningService.getThisMonthEarningCount(),
-    };
-  }
+  // @Get('earning-count/this-month')
+  // async getThisMonthEarningCount() {
+  //   return {
+  //     count: await this.earningService.getThisMonthEarningCount(),
+  //   };
+  // }
 
-  @Get('earning-count/total')
-  async getTotalEarningCount() {
-    return {
-      count: await this.earningService.getTotalEarningCount(),
-    };
-  }
+  // @Get('earning-count/total')
+  // async getTotalEarningCount() {
+  //   return {
+  //     count: await this.earningService.getTotalEarningCount(),
+  //   };
+  // }
 
-  @Get('total-profit')
-  async getTotalProfit() {
-    return {
-      count: await this.earningService.getTotalProfit(),
-    };
-  }
+  // @Get('total-profit')
+  // async getTotalProfit() {
+  //   return {
+  //     count: await this.earningService.getTotalProfit(),
+  //   };
+  // }
 
   @Get(':id')
   findOne(@Param('id') id: string) {

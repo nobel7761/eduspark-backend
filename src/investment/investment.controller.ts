@@ -61,10 +61,10 @@ export class InvestmentController {
     return this.investmentService.remove(id);
   }
 
-  @Get('investment-count/total')
-  async getTotalInvestmentCount() {
-    return {
-      count: await this.investmentService.getTotalInvestmentCount(),
-    };
-  }
+  // @Get('investment-count/total')
+  // async getTotalInvestmentCount() {
+  //   return {
+  //     count: await this.investmentService.getTotalInvestmentCount(),
+  //   };
+  // }
 }

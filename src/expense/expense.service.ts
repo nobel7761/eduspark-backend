@@ -200,4 +200,22 @@ export class ExpenseService {
 
     return result.length > 0 ? result[0].totalAmount : 0;
   }
+
+  async getTotalFundAmount(): Promise<number> {
+    const result = await this.expenseModel.aggregate<ExpenseAggregateResult>([
+      {
+        $match: {
+          comments: 'Fund',
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalAmount: { $sum: '$amount' },
+        },
+      },
+    ]);
+
+    return result.length > 0 ? result[0].totalAmount : 0;
+  }
 }
