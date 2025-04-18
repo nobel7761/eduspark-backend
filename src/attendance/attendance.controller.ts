@@ -8,15 +8,15 @@ import {
   Delete,
   Query,
   BadRequestException,
-  UseGuards,
+  // UseGuards,
 } from '@nestjs/common';
 import { AttendanceService } from './attendance.service';
 import { CreateAttendanceDto, UpdateAttendanceDto } from './attendance.dto';
 import { AttendanceStatus } from '../enums/attandance.enum';
-import { JwtAuthGuard } from '../guards/jwt-auth.guard';
+// import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 
 @Controller('attendance')
-@UseGuards(JwtAuthGuard)
+// @UseGuards(JwtAuthGuard)
 export class AttendanceController {
   constructor(private readonly attendanceService: AttendanceService) {}
 

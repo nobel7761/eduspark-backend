@@ -8,14 +8,14 @@ import {
   Delete,
   Query,
   BadRequestException,
-  UseGuards,
+  // UseGuards,
 } from '@nestjs/common';
 import { EarningService } from './earning.service';
 import { CreateEarningDto, UpdateEarningDto } from './earning.dto';
-import { JwtAuthGuard } from '../guards/jwt-auth.guard';
+// import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 
 @Controller('earnings')
-@UseGuards(JwtAuthGuard)
+// @UseGuards(JwtAuthGuard)
 export class EarningController {
   constructor(private readonly earningService: EarningService) {}
 
