@@ -91,6 +91,7 @@ export class EmployeeService {
   async getEmployeeForSubmitClassCount(user: UserDocument) {
     let employee: EmployeeDocument[] | EmployeeDocument | null = null;
     if (user.role === Role.SUPER_ADMIN) {
+      console.log('super admin');
       employee = await this.employeeModel
         .find({
           employeeType: EmployeeType.TEACHER,
@@ -98,6 +99,7 @@ export class EmployeeService {
         })
         .sort({ createdAt: -1 });
     } else {
+      console.log('not super admin', user.email, user.role);
       const foundEmployee = await this.employeeModel.findOne({
         email: user.email,
       });
