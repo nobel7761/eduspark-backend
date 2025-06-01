@@ -5,6 +5,8 @@ import {
   Request,
   Headers,
   UnauthorizedException,
+  Get,
+  UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import {
@@ -15,7 +17,9 @@ import {
   ChangePasswordDto,
 } from './auth.dto';
 import { Request as ExpressRequest } from 'express';
-// import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../guards/jwt-auth.guard';
+import { UserDocument } from '../users/user.model';
+import { AuthUser } from '../decorators/auth-user.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -59,5 +63,11 @@ export class AuthController {
       throw new UnauthorizedException('Refresh token is required');
     }
     return await this.authService.refreshAccessToken(refreshToken);
+  }
+
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  async getProfile(@AuthUser() user: UserDocument) {
+    return await this.authService.getProfile(user);
   }
 }

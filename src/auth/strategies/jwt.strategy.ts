@@ -14,20 +14,31 @@ interface JwtPayload {
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {
-    if (!process.env.JWT_SECRET) {
-      throw new Error('JWT_SECRET is not defined');
+    if (!process.env.JWT_ACCESS_SECRET) {
+      throw new Error('JWT_ACCESS_SECRET is not defined');
     }
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: process.env.JWT_SECRET,
+      secretOrKey: process.env.JWT_ACCESS_SECRET,
     });
   }
 
   async validate(payload: JwtPayload) {
-    const user = await this.userModel.findById(payload.sub);
-    if (!user || !user.isActive) {
-      throw new UnauthorizedException();
+    try {
+      const user = await this.userModel.findById(payload.sub);
+
+      if (!user) {
+        throw new UnauthorizedException('User not found');
+      }
+
+      if (!user.isActive) {
+        throw new UnauthorizedException('User is not active');
+      }
+
+      return user;
+    } catch (error) {
+      console.error('JWT Strategy - Error during validation:', error);
+      throw error;
     }
-    return user;
   }
 }

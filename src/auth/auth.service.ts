@@ -16,10 +16,12 @@ import { UsersService } from '../users/users.service';
 import * as crypto from 'crypto';
 import { UserDocument } from '../users/user.model';
 import { comparePassword, hashPassword } from '../utils/password.util';
+import { EmployeeService } from '../employee/employee.service';
 
 @Injectable()
 export class AuthService {
   private usersService: UsersService;
+  private employeeService: EmployeeService;
   constructor(
     private jwtService: JwtService,
     private moduleRef: ModuleRef,
@@ -27,6 +29,10 @@ export class AuthService {
 
   onModuleInit() {
     this.usersService = this.moduleRef.get(UsersService, {
+      strict: false,
+    });
+
+    this.employeeService = this.moduleRef.get(EmployeeService, {
       strict: false,
     });
   }
@@ -133,6 +139,19 @@ export class AuthService {
     } catch {
       throw new UnauthorizedException('Invalid refresh token');
     }
+  }
+
+  async getProfile(user: UserDocument) {
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+    const employeeDetails = await this.employeeService.findEmployeeByEmail(
+      user.email,
+    );
+    return {
+      ...user,
+      ...employeeDetails,
+    };
   }
 
   private async generateTokens(user: UserDocument) {

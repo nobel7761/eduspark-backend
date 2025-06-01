@@ -6,10 +6,11 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateEmployeeDto, UpdateEmployeeDto } from './employee.dto';
-import { Employee } from './employee.model';
+import { Employee, EmployeeDocument } from './employee.model';
 import { generateEmployeeId } from '../utils/generate-employee-id';
-import { EmployeeType } from '../enums/common.enum';
+import { EmployeeType, Role } from '../enums/common.enum';
 import { PaymentMethod } from '../enums/payment.enum';
+import { UserDocument } from 'src/users/user.model';
 
 @Injectable()
 export class EmployeeService {
@@ -87,6 +88,37 @@ export class EmployeeService {
     return await this.employeeModel.find().sort({ createdAt: -1 });
   }
 
+  async getEmployeeForSubmitClassCount(user: UserDocument) {
+    let employee: EmployeeDocument[] | EmployeeDocument | null = null;
+    if (user.role === Role.SUPER_ADMIN) {
+      employee = await this.employeeModel
+        .find({
+          employeeType: EmployeeType.TEACHER,
+          paymentMethod: PaymentMethod.PerClass,
+        })
+        .sort({ createdAt: -1 });
+    } else {
+      const foundEmployee = await this.employeeModel.findOne({
+        email: user.email,
+      });
+      const teacherWhoIsNotDirector = await this.employeeModel.findOne({
+        employeeType: EmployeeType.TEACHER,
+        paymentMethod: PaymentMethod.PerClass,
+        isDirector: false,
+      });
+      if (!foundEmployee) {
+        throw new NotFoundException(
+          `Employee with email ${user.email} not found`,
+        );
+      }
+      employee = [
+        foundEmployee,
+        ...(teacherWhoIsNotDirector ? [teacherWhoIsNotDirector] : []),
+      ];
+    }
+    return employee;
+  }
+
   async findOne(employeeId: string) {
     const employee = await this.employeeModel.findOne({
       employeeId: employeeId,
@@ -95,6 +127,17 @@ export class EmployeeService {
     if (!employee) {
       throw new NotFoundException(`Employee with ID ${employeeId} not found`);
     }
+    return employee;
+  }
+
+  async findEmployeeByEmail(email: string) {
+    const employee = await this.employeeModel.findOne({
+      email: email.toLowerCase(),
+    });
+    if (!employee) {
+      throw new NotFoundException(`Employee with email ${email} not found`);
+    }
+
     return employee;
   }
 

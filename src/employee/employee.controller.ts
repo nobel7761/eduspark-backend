@@ -6,14 +6,15 @@ import {
   Patch,
   Param,
   Delete,
-  //   UseGuards,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateEmployeeDto, UpdateEmployeeDto } from './employee.dto';
 import { EmployeeService } from './employee.service';
-// import { JwtAuthGuard } from '../guards';
+import { JwtAuthGuard } from '../guards/jwt-auth.guard';
+import { AuthUser } from '../decorators/auth-user.decorator';
+import { UserDocument } from '../users/user.model';
 
 @Controller('employees')
-// @UseGuards(JwtAuthGuard)
 export class EmployeeController {
   constructor(private readonly employeeService: EmployeeService) {}
 
@@ -25,6 +26,12 @@ export class EmployeeController {
   @Get()
   findAll() {
     return this.employeeService.findAll();
+  }
+
+  @Get('get-employee-for-submit-class-count')
+  @UseGuards(JwtAuthGuard)
+  getEmployeeForSubmitClassCount(@AuthUser() user: UserDocument) {
+    return this.employeeService.getEmployeeForSubmitClassCount(user);
   }
 
   // @Get('employee-count/teachers')
